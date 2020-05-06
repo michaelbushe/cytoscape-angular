@@ -39,6 +39,7 @@ export class CytoscapeGraphToolbarComponent implements OnInit {
   }
 
   set layoutOptions(value) {
+    console.log(`Graph toolbar gets new layout options ${JSON.stringify(value)}`)
     this._layoutOptions = value;
     this.layoutOptionsChange.emit(this._layoutOptions);
   }

@@ -1,9 +1,10 @@
 import {
+  AfterViewInit,
   Component,
   EventEmitter,
   Input,
   OnInit,
-  Output,
+  Output, ViewChild
 } from '@angular/core'
 import { LayoutOptions } from 'cytoscape'
 import {
@@ -16,6 +17,11 @@ import {
   PresetLayoutOptionsImpl,
   RandomLayoutOptionsImpl
 } from '../layout/layout-options-impl'
+
+class LayoutInfo {
+  name: string
+  layout: any
+}
 
 @Component({
   selector: 'cytoscape-layout-tool',
@@ -58,157 +64,184 @@ import {
       <button pButton class="close-button" style="height: 18px;">&nbsp;X&nbsp;</button>
     </div>
     <p-dropdown
+        name="selectedLayoutInfo"
         [options]="layoutInfos"
         [(ngModel)]="selectedLayoutInfo"
         optionLabel="name"
       ></p-dropdown>
-    <cyto-fluid-form-fieldset model="selectedLayoutInfo" [modelProperty]="'fit'"></cyto-fluid-form-fieldset>
-    <p-fieldset class="fieldset" legend="Animation" *ngIf="selectedLayoutHasProperty('animate')">
-      <div class="ui-g ui-fluid" *ngIf="selectedLayoutHasProperty('zoom')">
-        <div class="ui-g-12 ui-md-4">
-          <div class="ui-inputgroup">
-            <span class="ui-inputgroup-addon"><i class="pi pi-plus-circle"></i></span>
-            <input type="number" pInputText placeholder="Zoom" [(ngModel)]="layoutOptions.zoom"
-                   pTooltip="the zoom level to set (likely want fit = false if set)"
-                   [disabled]="selectedLayoutDoesntHaveOwnProperty('zoom')"/>
+    <!--
+    Something more generic would be nice...
+        <cyto-fluid-form-fieldset model="selectedLayoutInfo" [modelProperty]="'fit'"></cyto-fluid-form-fieldset>
+     -->
+    <form #layoutForm="ngForm">
+      <p-fieldset class="fieldset" legend="Fit" *ngIf="selectedLayoutHasProperty('fit')">
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12 ui-md-4">
+            <div class="ui-inputgroup">
+              <span class="ui-chkbox-label">Fit</span>
+              <p-inputSwitch [(ngModel)]="layoutOptions.fit" name="fit"
+                             pTooltip="whether to fit to viewport"
+                             [disabled]="selectedLayoutDoesntHaveOwnProperty('fit')"></p-inputSwitch>
+            </div>
+          </div>
+          <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('padding')">
+            <div class="ui-inputgroup">
+              <span class="ui-chkbox-label">Padding</span>
+              <input type="number" pInputText placeholder="Padding"
+                     [(ngModel)]="layoutOptions.padding" name="padding"
+                     pTooltip="padding around when fit"
+                     [disabled]="selectedLayoutDoesntHaveOwnProperty('padding')"/>
+            </div>
           </div>
         </div>
-        <div class="ui-g-12 ui-md-4"  *ngIf="selectedLayoutHasProperty('pan')">
-          <div class="ui-inputgroup">
-            <input type="number" pInputText placeholder="Pan" [(ngModel)]="layoutOptions.pan"
-                   pTooltip="the pan level to set (likely want fit = false if set)"
-                   [disabled]="selectedLayoutDoesntHaveOwnProperty('pan')"/>
+      </p-fieldset>
+      <p-fieldset class="fieldset" legend="Animation" *ngIf="selectedLayoutHasProperty('animate')">
+        <div class="ui-g ui-fluid" *ngIf="selectedLayoutHasProperty('zoom')">
+          <div class="ui-g-12 ui-md-4">
+            <div class="ui-inputgroup">
+              <span class="ui-inputgroup-addon"><i class="pi pi-plus-circle"></i></span>
+              <input type="number" pInputText placeholder="Zoom" [(ngModel)]="layoutOptions.zoom" name="zoom"
+                     pTooltip="the zoom level to set (likely want fit = false if set)"
+                     [disabled]="selectedLayoutDoesntHaveOwnProperty('zoom')"/>
+            </div>
+          </div>
+          <div class="ui-g-12 ui-md-4"  *ngIf="selectedLayoutHasProperty('pan')">
+            <div class="ui-inputgroup">
+              <input type="number" pInputText placeholder="Pan" [(ngModel)]="layoutOptions.pan" name="pan"
+                     pTooltip="the pan level to set (likely want fit = false if set)"
+                     [disabled]="selectedLayoutDoesntHaveOwnProperty('pan')"/>
+            </div>
+          </div>
+          <div class="ui-g-12 ui-md-4"  *ngIf="selectedLayoutHasProperty('animate')">
+            <div class="ui-inputgroup">
+              <span class="ui-chkbox-label">Animate</span>
+              <p-inputSwitch [(ngModel)]="layoutOptions.animate" name="animate"
+                             pTooltip="whether to transition the node positions"
+                             [disabled]="selectedLayoutDoesntHaveOwnProperty('animate')"></p-inputSwitch>
+            </div>
+          </div>
+          <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('animationDuration')">
+            <div class="ui-inputgroup">
+              <input type="number" pInputText placeholder="Animation Duration"
+                     [(ngModel)]="layoutOptions.animationDuration" name="animationDuration"
+                     pTooltip="duration of animation in ms if enabled"
+                     [disabled]="selectedLayoutDoesntHaveOwnProperty('animationDuration')"/>
+            </div>
+          </div>
+          <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('animationEasing')">
+            <div class="ui-inputgroup">
+              <input type="number" pInputText placeholder="Animation Easing"
+                     [(ngModel)]="layoutOptions.animationEasing" name="animationEasing"
+                     pTooltip="easing of animation if enabled"
+                     [disabled]="selectedLayoutDoesntHaveOwnProperty('animationEasing')"/>
+            </div>
           </div>
         </div>
-        <div class="ui-g-12 ui-md-4"  *ngIf="selectedLayoutHasProperty('animate')">
-          <div class="ui-inputgroup">
-            <span class="ui-chkbox-label">Animate</span>
-            <p-inputSwitch [(ngModel)]="layoutOptions.animate"
-                           pTooltip="whether to transition the node positions"
-                           [disabled]="selectedLayoutDoesntHaveOwnProperty('animate')"></p-inputSwitch>
+      </p-fieldset>
+      <p-fieldset class="fieldset" legend="Shaped" *ngIf="selectedLayoutHasProperty('avoidOverlap')">
+        <div class="ui-g ui-fluid" *ngIf="selectedLayoutHasProperty('avoidOverlap')">
+          <div class="ui-g-12 ui-md-4">
+            <div class="ui-inputgroup">
+              <span class="ui-chkbox-label">Avoid Overlap</span>
+              <p-inputSwitch [(ngModel)]="layoutOptions.avoidOverlap" name="avoidOverlap"
+                             pTooltip="prevents node overlap, may overflow boundingBox if not enough space"
+                             [disabled]="selectedLayoutDoesntHaveOwnProperty('avoidOverlap')"></p-inputSwitch>
+            </div>
+          </div>
+          <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('spacingFactor')">
+            <div class="ui-inputgroup">
+              <span class="ui-chkbox-label">Spacing Factor</span>
+              <p-inputSwitch [(ngModel)]="layoutOptions.spacingFactor" name="spacingFactor"
+                             pTooltip="Applies a multiplicative factor (>0) to expand or compress the overall area that the nodes take up"
+                             [disabled]="selectedLayoutDoesntHaveOwnProperty('spacingFactor')"></p-inputSwitch>
+            </div>
+          </div>
+          <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('nodeDimensionsIncludeLabels')">
+            <div class="ui-inputgroup">
+              <span class="ui-chkbox-label">Node Dimensions Include Labels</span>
+              <p-inputSwitch [(ngModel)]="layoutOptions.nodeDimensionsIncludeLabels" name="nodeDimensionsIncludeLabels"
+                             pTooltip="Excludes the label when calculating node bounding boxes for the layout algorithm"
+                             [disabled]="selectedLayoutDoesntHaveOwnProperty('nodeDimensionIncludeLabels')"></p-inputSwitch>
+            </div>
           </div>
         </div>
-        <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('animationDuration')">
-          <div class="ui-inputgroup">
-            <input type="number" pInputText placeholder="Animation Duration"
-                   [(ngModel)]="layoutOptions.animationDuration"
-                   pTooltip="duration of animation in ms if enabled"
-                   [disabled]="selectedLayoutDoesntHaveOwnProperty('animationDuration')"/>
+      </p-fieldset>
+      <p-fieldset class="fieldset" legend="Directed" *ngIf="selectedLayoutHasProperty('directed')">
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12 ui-md-4">
+            <div class="ui-inputgroup">
+              <span class="ui-chkbox-label">Directed</span>
+              <p-inputSwitch [(ngModel)]="layoutOptions.directed" name="directed"
+                             pTooltip="whether the tree is directed downwards (or edges can point in any direction if false)"
+                             [disabled]="selectedLayoutDoesntHaveOwnProperty('directed')"></p-inputSwitch>
+            </div>
+          </div>
+          <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('circle')">
+            <div class="ui-inputgroup">
+              <span class="ui-chkbox-label">Circle</span>
+              <p-inputSwitch [(ngModel)]="layoutOptions.circle" name="circle"
+                             pTooltip="put depths in concentric circles if true, put depths top down if false"
+                             [disabled]="selectedLayoutDoesntHaveOwnProperty('circle')"></p-inputSwitch>
+            </div>
+          </div>
+          <div class="ui-g-12 ui-md-4"  *ngIf="selectedLayoutHasProperty('maximalAdjustments')">
+            <div class="ui-inputgroup">
+              <input type="number" pInputText placeholder="Maximal Adjustments"
+                     [(ngModel)]="layoutOptions.maximalAdjustments" name="maximalAdjustments"
+                     pTooltip="how many times to try to position the nodes in a maximal way (i.e. no backtracking)"
+                     [disabled]="selectedLayoutDoesntHaveOwnProperty('maximalAdjustments')"/>
+            </div>
+          </div>
+          <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('grid')">
+            <div class="ui-inputgroup">
+              <span class="ui-chkbox-label">Grid</span>
+              <p-inputSwitch [(ngModel)]="layoutOptions.grid" name="grid"
+                             pTooltip="whether to shift nodes down their natural BFS depths in order to avoid upwards edges (DAGS only)"
+                             [disabled]="selectedLayoutDoesntHaveOwnProperty('grid')"></p-inputSwitch>
+            </div>
           </div>
         </div>
-        <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('animationEasing')">
-          <div class="ui-inputgroup">
-            <input type="number" pInputText placeholder="Animation Easing"
-                   [(ngModel)]="layoutOptions.animationEasing"
-                   pTooltip="easing of animation if enabled"
-                   [disabled]="selectedLayoutDoesntHaveOwnProperty('animationEasing')"/>
+      </p-fieldset>
+      <p-fieldset class="fieldset" legend="Dagre" *ngIf="selectedLayoutHasProperty('nodeSep')">
+        <div class="ui-g ui-fluid" *ngIf="selectedLayoutHasProperty('nodeSep')">
+          <div class="ui-g-12 ui-md-4">
+            <div class="ui-inputgroup">
+              <input type="number" pInputText placeholder="Node Separation"
+                     [(ngModel)]="layoutOptions.nodeSep" name="nodeSep"
+                     pTooltip="the separation between adjacent nodes in the same rank"
+                     [disabled]="selectedLayoutDoesntHaveOwnProperty('nodeSep')">
+            </div>
+          </div>
+          <div class="ui-g-12 ui-md-4">
+            <div class="ui-inputgroup">
+              <input type="number" pInputText placeholder="Edge Separation"
+                     [(ngModel)]="layoutOptions.edgeSep" name="edgeSep"
+                     pTooltip="the separation between adjacent edges in the same rank"
+                     [disabled]="selectedLayoutDoesntHaveOwnProperty('edgeSep')">
+            </div>
+          </div>
+          <div class="ui-g-12 ui-md-4">
+            <div class="ui-inputgroup">
+              <input type="number" pInputText placeholder="Rank Separation"
+                     [(ngModel)]="layoutOptions.rankSep" name="rankSep"
+                     pTooltip="the separation between each rank in the layout"
+                     [disabled]="selectedLayoutDoesntHaveOwnProperty('rankSep')">
+            </div>
+          </div>
+          <div class="ui-g-12 ui-md-4">
+            <div class="ui-inputgroup">
+              <span class="ui-chkbox-label">Ranker</span>
+              <p-dropdown [options]="[{name: 'network-simplex', label:'network-simplex'},
+                                      {name: 'tight-tree', label: 'tight-tree'},
+                                      {name: 'longest-path', label: 'longest-path'}]"
+                  [(ngModel)]="layoutOptions.ranker" name="ranker"
+                  pTooltip="Type of algorithm to assign a rank to each node in the input graph."
+                  [disabled]="selectedLayoutDoesntHaveOwnProperty('ranker')"></p-dropdown>
+            </div>
           </div>
         </div>
-      </div>
-    </p-fieldset>
-    <p-fieldset class="fieldset" legend="Shaped" *ngIf="selectedLayoutHasProperty('avoidOverlap')">
-      <div class="ui-g ui-fluid" *ngIf="selectedLayoutHasProperty('avoidOverlap')">
-        <div class="ui-g-12 ui-md-4">
-          <div class="ui-inputgroup">
-            <span class="ui-chkbox-label">Avoid Overlap</span>
-            <p-inputSwitch [(ngModel)]="layoutOptions.avoidOverlap"
-                           pTooltip="prevents node overlap, may overflow boundingBox if not enough space"
-                           [disabled]="selectedLayoutDoesntHaveOwnProperty('avoidOverlap')"></p-inputSwitch>
-          </div>
-        </div>
-        <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('spacingFactor')">
-          <div class="ui-inputgroup">
-            <span class="ui-chkbox-label">Spacing Factor</span>
-            <p-inputSwitch [(ngModel)]="layoutOptions.spacingFactor"
-                           pTooltip="Applies a multiplicative factor (>0) to expand or compress the overall area that the nodes take up"
-                           [disabled]="selectedLayoutDoesntHaveOwnProperty('spacingFactor')"></p-inputSwitch>
-          </div>
-        </div>
-        <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('nodeDimensionsIncludeLabels')">
-          <div class="ui-inputgroup">
-            <span class="ui-chkbox-label">Node Dimensions Include Labels</span>
-            <p-inputSwitch [(ngModel)]="layoutOptions.nodeDimensionsIncludeLabels"
-                           pTooltip="Excludes the label when calculating node bounding boxes for the layout algorithm"
-                           [disabled]="selectedLayoutDoesntHaveOwnProperty('nodeDimensionIncludeLabels')"></p-inputSwitch>
-          </div>
-        </div>
-      </div>
-    </p-fieldset>
-    <p-fieldset class="fieldset" legend="Directed" *ngIf="selectedLayoutHasProperty('directed')">
-      <div class="ui-g ui-fluid">
-        <div class="ui-g-12 ui-md-4">
-          <div class="ui-inputgroup">
-            <span class="ui-chkbox-label">Directed</span>
-            <p-inputSwitch [(ngModel)]="layoutOptions.directed"
-                           pTooltip="whether the tree is directed downwards (or edges can point in any direction if false)"
-                           [disabled]="selectedLayoutDoesntHaveOwnProperty('directed')"></p-inputSwitch>
-          </div>
-        </div>
-        <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('circle')">
-          <div class="ui-inputgroup">
-            <span class="ui-chkbox-label">Circle</span>
-            <p-inputSwitch [(ngModel)]="layoutOptions.circle"
-                           pTooltip="put depths in concentric circles if true, put depths top down if false"
-                           [disabled]="selectedLayoutDoesntHaveOwnProperty('circle')"></p-inputSwitch>
-          </div>
-        </div>
-        <div class="ui-g-12 ui-md-4"  *ngIf="selectedLayoutHasProperty('maximalAdjustments')">
-          <div class="ui-inputgroup">
-            <input type="number" pInputText placeholder="Maximal Adjustments"
-                   [(ngModel)]="layoutOptions.maximalAdjustments"
-                   pTooltip="how many times to try to position the nodes in a maximal way (i.e. no backtracking)"
-                   [disabled]="selectedLayoutDoesntHaveOwnProperty('maximalAdjustments')"/>
-          </div>
-        </div>
-        <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('grid')">
-          <div class="ui-inputgroup">
-            <span class="ui-chkbox-label">Grid</span>
-            <p-inputSwitch [(ngModel)]="layoutOptions.grid"
-                           pTooltip="whether to shift nodes down their natural BFS depths in order to avoid upwards edges (DAGS only)"
-                           [disabled]="selectedLayoutDoesntHaveOwnProperty('grid')"></p-inputSwitch>
-          </div>
-        </div>
-      </div>
-    </p-fieldset>
-    <p-fieldset class="fieldset" legend="Dagre" *ngIf="selectedLayoutHasProperty('nodeSep')">
-      <div class="ui-g ui-fluid" *ngIf="selectedLayoutHasProperty('nodeSep')">
-        <div class="ui-g-12 ui-md-4">
-          <div class="ui-inputgroup">
-            <input type="number" pInputText placeholder="Node Separation"
-                   [(ngModel)]="layoutOptions.nodeSep"
-                   pTooltip="the separation between adjacent nodes in the same rank"
-                   [disabled]="selectedLayoutDoesntHaveOwnProperty('nodeSep')">
-          </div>
-        </div>
-        <div class="ui-g-12 ui-md-4">
-          <div class="ui-inputgroup">
-            <input type="number" pInputText placeholder="Edge Separation"
-                   [(ngModel)]="layoutOptions.edgeSep"
-                   pTooltip="the separation between adjacent edges in the same rank"
-                   [disabled]="selectedLayoutDoesntHaveOwnProperty('edgeSep')">
-          </div>
-        </div>
-        <div class="ui-g-12 ui-md-4">
-          <div class="ui-inputgroup">
-            <input type="number" pInputText placeholder="Rank Separation"
-                   [(ngModel)]="layoutOptions.rankSep"
-                   pTooltip="the separation between each rank in the layout"
-                   [disabled]="selectedLayoutDoesntHaveOwnProperty('rankSep')">
-          </div>
-        </div>
-        <div class="ui-g-12 ui-md-4">
-          <div class="ui-inputgroup">
-            <span class="ui-chkbox-label">Ranker</span>
-            <p-dropdown [options]="[{name: 'network-simplex', label:'network-simplex'},
-                                    {name: 'tight-tree', label: 'tight-tree'},
-                                    {name: 'longest-path', label: 'longest-path'}]"
-                [(ngModel)]="layoutOptions.ranker"
-                pTooltip="Type of algorithm to assign a rank to each node in the input graph."
-                [disabled]="selectedLayoutDoesntHaveOwnProperty('ranker')"></p-dropdown>
-          </div>
-        </div>
-      </div>
-    </p-fieldset>
+      </p-fieldset>
+    </form>
 
     <!--
 
@@ -349,8 +382,11 @@ import {
 
     -->
   `})
-export class CytoscapeLayoutToolComponent implements OnInit {
-  public layoutInfos = [{name: 'random', layout: new RandomLayoutOptionsImpl()},
+export class CytoscapeLayoutToolComponent implements OnInit, AfterViewInit {
+  @ViewChild('layoutForm') layoutForm;
+
+  public layoutInfos: LayoutInfo[] = [
+    {name: 'random', layout: new RandomLayoutOptionsImpl()},
     {name: 'dagre', layout: new DagreLayoutOptionsImpl()},
     {name: 'null', layout: new NullLayoutOptionsImpl()},
     {name: 'circle', layout: new CircleLayoutOptionsImpl()},
@@ -358,7 +394,8 @@ export class CytoscapeLayoutToolComponent implements OnInit {
     {name: 'grid', layout: new GridLayoutOptionsImpl()},
     {name: 'preset', layout: new PresetLayoutOptionsImpl()},
     {name: 'breadthfirst', layout: new BreadthFirstLayoutOptionsImpl()},
-    {name: 'cose', layout: new CoseLayoutOptionsImpl()}]
+    {name: 'cose', layout: new CoseLayoutOptionsImpl()}
+    ]
 
   _layoutOptions: any
   @Input()
@@ -366,8 +403,9 @@ export class CytoscapeLayoutToolComponent implements OnInit {
     return this._layoutOptions
   }
   set layoutOptions(value) {
+    console.log(`set layoutOptions: ${JSON.stringify(value)}`)
     this._layoutOptions = value
-    console.log(`emitting new layout name: ${value.name}`)
+    console.log(`emitting new layout: ${JSON.stringify(this._layoutOptions)}`)
     this.layoutOptionsChange.emit(this._layoutOptions)
   }
 
@@ -378,8 +416,6 @@ export class CytoscapeLayoutToolComponent implements OnInit {
   set selectedLayoutInfo(value: any) {
     console.log(`updating this._selectedLayoutInfo from selected layout info ${JSON.stringify(value)}`)
     this._selectedLayoutInfo = value
-    console.log(`updating layoutOptions ${JSON.stringify(value.layout)}`)
-    this.layoutOptions = value.layout
   }
 
   @Output() layoutOptionsChange: EventEmitter<LayoutOptions> = new EventEmitter<LayoutOptions>()
@@ -389,28 +425,54 @@ export class CytoscapeLayoutToolComponent implements OnInit {
 
   ngOnInit(): void {
     let layoutInfoToSet = this.layoutInfos[5]
+    console.log('setting the initial selected layout, default: ', layoutInfoToSet.name)
     if (this.layoutOptions) {
-      let layoutName = this.layoutOptions.name
-      let matchingInfo = this.getLayoutInfoForName(layoutName)
-      if (matchingInfo) {
-        matchingInfo.layout = this.layoutOptions
-      } else {
-        console.warn(`Did you pass a new kind of layout?  The layout name ${layoutName} was not found, adding a new one to the list`)
-        matchingInfo = { name: layoutName, layout: this.layoutOptions }
-        this.layoutInfos.push(matchingInfo)
-      }
-      layoutInfoToSet = matchingInfo
+      console.log(`setting  the initial selected layout based on input/output layout ${JSON.stringify(this.layoutOptions)}`)
+      layoutInfoToSet = this.createOrUpdateLayoutInfo(this.layoutOptions.name, this.layoutOptions)
     }
+    console.log('Initializing this.selectedLayoutInfo with layoutInfoToSet ', JSON.stringify(layoutInfoToSet))
     this.selectedLayoutInfo = layoutInfoToSet
   }
 
-  private getLayoutInfoForName(name: string) {
+  ngAfterViewInit() {
+    let differs = false
+    this.layoutForm.form.valueChanges.subscribe(change => {
+      console.log(`form change: ${JSON.stringify(change)}
+                      \nwith form: , ${JSON.stringify(this.selectedLayoutInfo)}
+                      \nand layoutOptions ${JSON.stringify(this.layoutOptions)}`)
+      // We don't care about the layout itself changing.
+      console.log(`Form changed selected name: ${this.selectedLayoutInfo.name}, output name: ${this.layoutOptions.name}`)
+      if (this.selectedLayoutInfo.name !== this.layoutOptions.name) {
+        console.log(`Form changed to ${this.selectedLayoutInfo.name} from ${this.layoutOptions.name}`)
+        // return
+      }
+      const newLayoutOptions = {...this.selectedLayoutInfo, ...change, ...{ name: this.selectedLayoutInfo.name} }
+      console.log('setting new layoutOptions:', JSON.stringify(newLayoutOptions))
+      this.layoutOptions = newLayoutOptions
+    })
+  }
+
+  private createOrUpdateLayoutInfo(name: string, layoutOptions: LayoutOptions): any {
+    let matchingInfo = this.getLayoutInfoForName(name)
+    if (matchingInfo) {
+      console.log('Got matching info ', JSON.stringify(matchingInfo))
+      matchingInfo.layout = {...matchingInfo.layout, ...layoutOptions}
+      console.log('new matching info: ', JSON.stringify(matchingInfo))
+    } else {
+      console.warn(`Did you pass a new kind of layout?  The layout name ${name} was not found, adding a new one to the list`)
+      matchingInfo = { name: name, layout: layoutOptions }
+      this.layoutInfos.push(matchingInfo)
+    }
+    return matchingInfo
+  }
+
+  private getLayoutInfoForName(name: string): LayoutInfo {
     return this.layoutInfos.find(info => info.name === name)
   }
 
   // layoutInfoChanged($event: any) {
   //   console.log(`layoutInfoChanged ${JSON.stringify($event.value)}`)
-  //   const chosenInfo = this.getLayoutInfoForName($event.value.name)
+  //   const chosenInfo = this.createOrUpdateLayoutInfo($event.value.name)
   //   if (!chosenInfo) {
   //     console.warn(`Could not find layout info for name ${$event.value.name}`)
   //   } else {
