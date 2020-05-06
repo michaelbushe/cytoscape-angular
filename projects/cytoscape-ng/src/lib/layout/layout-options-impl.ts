@@ -1,23 +1,11 @@
 import {
   AnimatedLayoutOptions,
-  BaseLayoutOptions,
   BoundingBox12,
   BoundingBoxWH,
-  BreadthFirstLayoutOptions,
-  CircleLayoutOptions,
-  ConcentricLayoutOptions,
-  GridLayoutOptions,
-  NullLayoutOptions,
-  PresetLayoutOptions,
-  RandomLayoutOptions,
-  ShapedLayoutOptions,
   SortingFunction
 } from 'cytoscape'
 
-class BaseLayoutOptionsImpl implements BaseLayoutOptions {
-
-  constructor(public name: string) {
-  }
+class BaseLayoutOptionsImpl {
 
   ready(e: cytoscape.LayoutEventObject): void {
     // tslint:disable-next-line:no-console
@@ -30,11 +18,8 @@ class BaseLayoutOptionsImpl implements BaseLayoutOptions {
   }
 }
 
-// @ts-ignore
-export class NullLayoutOptionsImpl extends BaseLayoutOptionsImpl implements NullLayoutOptions {
-  constructor() {
-    super('null')
-  }
+export class NullLayoutOptionsImpl extends BaseLayoutOptionsImpl {
+  name = 'null'
 }
 
 export class AnimateLayoutOptionsImpl  extends BaseLayoutOptionsImpl implements AnimatedLayoutOptions  {
@@ -55,11 +40,8 @@ export class AnimateLayoutOptionsImpl  extends BaseLayoutOptionsImpl implements 
   animateFilter = ( node, i ) => true
 }
 
-// @ts-ignore
-export class PresetLayoutOptionsImpl  extends AnimateLayoutOptionsImpl implements PresetLayoutOptions  {
-  constructor() {
-    super('preset')
-  }
+export class PresetLayoutOptionsImpl  extends AnimateLayoutOptionsImpl {
+  name = 'preset'
 
   fit?: boolean
   padding?: number
@@ -70,7 +52,7 @@ export class PresetLayoutOptionsImpl  extends AnimateLayoutOptionsImpl implement
   transform = (node, position ) => position
 }
 
-export class ShapedLayoutOptionsImpl extends AnimateLayoutOptionsImpl implements ShapedLayoutOptions {
+export class ShapedLayoutOptionsImpl extends AnimateLayoutOptionsImpl {
 
   // whether to fit to viewport
   fit = true
@@ -94,11 +76,9 @@ export class ShapedLayoutOptionsImpl extends AnimateLayoutOptionsImpl implements
 }
 
 
-// @ts-ignore
-export class GridLayoutOptionsImpl  extends ShapedLayoutOptionsImpl implements GridLayoutOptions  {
-  constructor() {
-    super('grid')
-  }
+export class GridLayoutOptionsImpl  extends ShapedLayoutOptionsImpl {
+  name = 'grid'
+
   // extra spacing around nodes when avoidOverlap: true
   avoidOverlapPadding = 10
   // uses all available space on false, uses minimal space on true
@@ -112,11 +92,9 @@ export class GridLayoutOptionsImpl  extends ShapedLayoutOptionsImpl implements G
   position = undefined
 }
 
-// @ts-ignore
-export class RandomLayoutOptionsImpl extends AnimateLayoutOptionsImpl implements RandomLayoutOptions {
-  constructor() {
-    super('random')
-  }
+export class RandomLayoutOptionsImpl extends AnimateLayoutOptionsImpl {
+  name = 'random'
+
   fit = true
   padding = 20
   // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
@@ -125,11 +103,9 @@ export class RandomLayoutOptionsImpl extends AnimateLayoutOptionsImpl implements
   transform = (node, position ) => position
 }
 
-// @ts-ignore
-export class CircleLayoutOptionsImpl extends ShapedLayoutOptionsImpl implements CircleLayoutOptions {
-  constructor(overrideName?: string) {
-    super(overrideName ? overrideName : 'circle')
-  }
+export class CircleLayoutOptionsImpl extends ShapedLayoutOptionsImpl {
+  name =  'circle'
+
   radius: number // the radius of the circle
   startAngle: number = 3 / 2 * Math.PI // where nodes start in radians
   sweep: number = undefined // how many radians should be between the first and last node (defaults to full circle)
@@ -137,16 +113,22 @@ export class CircleLayoutOptionsImpl extends ShapedLayoutOptionsImpl implements 
 }
 
 // Note: "radius" is not part of concentric, imperfect extension
-// @ts-ignore
-export class ConcentricLayoutOptionsImpl extends CircleLayoutOptionsImpl implements ConcentricLayoutOptions {
-  constructor() {
-    super('concentric')
-  }
+export class ConcentricLayoutOptionsImpl {
+  name = 'concentric'
+  // how many radians should be between the first and last node (defaults to full circle)
+  sweep?: number;
+  // whether the layout should go clockwise (true) or counterclockwise/anticlockwise (false)
+  clockwise?: boolean;
+  // where nodes start in radians, e.g. 3 / 2 * Math.PI,
+  startAngle: number = 3 / 2 * Math.PI
+  fit: boolean
+  nodeDimensionsIncludeLabels: true
   equidistant: false // whether levels have an equal radial distance betwen them, may cause bounding box overflow
   minNodeSpacing: 10 // min spacing between outside of nodes (used for radius adjustment)
   boundingBox: undefined // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
-  startAngle: number = 3 / 2 * Math.PI
+  // height of layout area (overrides container height)
   height = undefined
+  // width of layout area (overrides container width)
   width = undefined
   // Applies a multiplicative factor (>0) to expand or compress the overall area that the nodes take up
   spacingFactor: undefined
@@ -160,11 +142,9 @@ export class ConcentricLayoutOptionsImpl extends CircleLayoutOptionsImpl impleme
   }
 }
 
-// @ts-ignore
-export class BreadthFirstLayoutOptionsImpl extends ShapedLayoutOptionsImpl implements BreadthFirstLayoutOptions {
-  constructor() {
-    super('breadthfirst');
-  }
+export class BreadthFirstLayoutOptionsImpl extends ShapedLayoutOptionsImpl {
+  name = 'breadthfirst'
+
   // whether the tree is directed downwards (or edges can point in any direction if false)
   directed = false
   // put depths in concentric circles if true, put depths top down if false
@@ -180,9 +160,8 @@ export class BreadthFirstLayoutOptionsImpl extends ShapedLayoutOptionsImpl imple
 }
 
 export class CoseLayoutOptionsImpl extends ShapedLayoutOptionsImpl {
-  constructor() {
-    super('cose');
-  }
+  name = 'cose'
+
   // The layout animates only after this many milliseconds for animate:true
   // (prevents flashing on fast runs)
   animationThreshold: 250
@@ -231,9 +210,8 @@ type RankDir = 'LR' | 'TB'
 type Ranker = 'network-simplex' | 'tight-tree' | 'longest-path'
 
 export class DagreLayoutOptionsImpl extends ShapedLayoutOptionsImpl {
-  constructor() {
-    super("dagre");
-  }
+  name= 'dagre'
+
   nodeSep: number = undefined // the separation between adjacent nodes in the same rank
   edgeSep: number = undefined // the separation between adjacent edges in the same rank
   rankSep: number = undefined // the separation between each rank in the layout

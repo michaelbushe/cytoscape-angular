@@ -1,12 +1,9 @@
 import {
-  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
-  OnChanges,
   OnInit,
   Output,
-  SimpleChanges
 } from '@angular/core'
 import { LayoutOptions } from 'cytoscape'
 import {
@@ -19,7 +16,6 @@ import {
   PresetLayoutOptionsImpl,
   RandomLayoutOptionsImpl
 } from '../layout/layout-options-impl'
-import { $e } from 'codelyzer/angular/styles/chars'
 
 @Component({
   selector: 'cytoscape-layout-tool',
@@ -57,7 +53,7 @@ import { $e } from 'codelyzer/angular/styles/chars'
   ],
   template: `
     <div style="display: flex;">
-      <div class="layoutHeader">Layout Type</div>
+      <div class="layoutHeader">Layouts</div>
       <div>&nbsp;</div>
       <button pButton class="close-button" style="height: 18px;">&nbsp;X&nbsp;</button>
     </div>
@@ -66,25 +62,7 @@ import { $e } from 'codelyzer/angular/styles/chars'
         [(ngModel)]="selectedLayoutInfo"
         optionLabel="name"
       ></p-dropdown>
-      <p-fieldset class="fieldset" legend="Fit" *ngIf="selectedLayoutHasProperty('fit')">
-      <div class="ui-g ui-fluid">
-        <div class="ui-g-12 ui-md-4">
-          <div class="ui-inputgroup">
-            <span class="ui-chkbox-label">Fit</span>
-            <p-inputSwitch [(ngModel)]="layoutOptions.fit" pTooltip="whether to fit to viewport"
-                           [disabled]="selectedLayoutDoesntHaveOwnProperty('fit')"></p-inputSwitch>
-          </div>
-        </div>
-        <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('padding')">
-          <div class="ui-inputgroup">
-            <span class="ui-chkbox-label">Padding</span>
-            <input type="number" pInputText placeholder="Padding" [(ngModel)]="layoutOptions.padding"
-                   pTooltip="padding around when fit"
-                   [disabled]="selectedLayoutDoesntHaveOwnProperty('padding')"/>
-          </div>
-        </div>
-      </div>
-    </p-fieldset>
+    <cyto-fluid-form-fieldset model="selectedLayoutInfo" [modelProperty]="'fit'"></cyto-fluid-form-fieldset>
     <p-fieldset class="fieldset" legend="Animation" *ngIf="selectedLayoutHasProperty('animate')">
       <div class="ui-g ui-fluid" *ngIf="selectedLayoutHasProperty('zoom')">
         <div class="ui-g-12 ui-md-4">

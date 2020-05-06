@@ -15,6 +15,7 @@ import { FluidFormInputGroupComponent } from './fluid-form-input-group/fluid-for
 import { GenericInputComponentComponent } from './generic-input-component/generic-input-component.component'
 import { CommonModule } from '@angular/common'
 import { CytoscapeStyleToolComponent } from './cytoscape-style-tool/cytoscape-style-tool.component'
+import { FluidFormFieldsetComponent } from './fluid-form-fieldset/fluid-form-fieldset.component'
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { CytoscapeStyleToolComponent } from './cytoscape-style-tool/cytoscape-st
     CytoscapeLayoutToolComponent,
     FluidFormInputGroupComponent,
     GenericInputComponentComponent,
-    CytoscapeStyleToolComponent
+    CytoscapeStyleToolComponent,
+    FluidFormFieldsetComponent
   ],
   imports: [
     FieldsetModule,

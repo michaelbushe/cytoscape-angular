@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core'
 import { CytoscapeOptions, EdgeDefinition, LayoutOptions, NodeDefinition, Position, SelectionType, Stylesheet } from 'cytoscape'
 import * as cy from 'cytoscape'
 declare var cytoscape: any
@@ -94,8 +94,9 @@ export class CytoscapeGraphComponent implements OnChanges, AfterViewInit {
   constructor(private el: ElementRef) {
   }
 
-  public ngOnChanges(): any {
+  public ngOnChanges(changes: SimpleChanges): any {
     console.log(`ngOnChanges this.nodes?.length : ${this.nodes?.length}, this.edges?.length : ${this.edges?.length}`)
+    console.log(`simpleChange ${JSON.stringify(changes.keys)}`)
     this.render()
   }
 
