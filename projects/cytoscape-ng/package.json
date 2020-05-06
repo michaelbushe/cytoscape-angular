@@ -1,0 +1,11 @@
+{
+  "name": "cytoscape-ng",
+  "version": "0.1.1",
+  "peerDependencies": {
+    "@angular/common": "^9.1.1",
+    "@angular/core": "^9.1.1",
+    "cytoscape": "^3.14.1",
+    "cytoscape-dagre": "^2.2.2",
+    "tslib": "^1.10.0"
+  }
+}

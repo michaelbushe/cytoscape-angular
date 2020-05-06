@@ -4,11 +4,11 @@ Angular component for [Cytoscape.js](https://js.cytoscape.org) graphs.
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.0.
 Using the commands: 
 
-` ng new ng-cytoscape-project --create-application=false -s -t -p mf`
+` ng new cytoscape-ng-project --create-application=false -s -t -p mf`
 
-`ng generate application ng-cytoscape-demo`
+`ng generate application cytoscape-ng-demo`
 
-`ng generate library ng-cytoscape`
+`ng generate library cytoscape-ng`
 
 ## Development server
 

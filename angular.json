@@ -3,41 +3,46 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ng-cytoscape-demo": {
+    "cytoscape-ng-demo": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
         }
       },
-      "root": "projects/ng-cytoscape-demo",
-      "sourceRoot": "projects/ng-cytoscape-demo/src",
+      "root": "projects/cytoscape-ng-demo",
+      "sourceRoot": "projects/cytoscape-ng-demo/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/ng-cytoscape-demo",
-            "index": "projects/ng-cytoscape-demo/src/index.html",
-            "main": "projects/ng-cytoscape-demo/src/main.ts",
-            "polyfills": "projects/ng-cytoscape-demo/src/polyfills.ts",
-            "tsConfig": "projects/ng-cytoscape-demo/tsconfig.app.json",
+            "outputPath": "dist/cytoscape-ng-demo",
+            "index": "projects/cytoscape-ng-demo/src/index.html",
+            "main": "projects/cytoscape-ng-demo/src/main.ts",
+            "polyfills": "projects/cytoscape-ng-demo/src/polyfills.ts",
+            "tsConfig": "projects/cytoscape-ng-demo/tsconfig.app.json",
             "aot": true,
             "assets": [
-              "projects/ng-cytoscape-demo/src/favicon.ico",
-              "projects/ng-cytoscape-demo/src/assets"
+              "projects/cytoscape-ng-demo/src/favicon.ico",
+              "projects/cytoscape-ng-demo/src/assets"
             ],
             "styles": [
-              "projects/ng-cytoscape-demo/src/styles.scss"
+              "node_modules/primeng/resources/themes/nova-light/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeicons/primeicons.css",
+              "projects/cytoscape-ng-demo/src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/cytoscape/dist/cytoscape.min.js"
+            ]
           },
           "configurations": {
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/ng-cytoscape-demo/src/environments/environment.ts",
-                  "with": "projects/ng-cytoscape-demo/src/environments/environment.prod.ts"
+                  "replace": "projects/cytoscape-ng-demo/src/environments/environment.ts",
+                  "with": "projects/cytoscape-ng-demo/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -66,33 +71,33 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ng-cytoscape-demo:build"
+            "browserTarget": "cytoscape-ng-demo:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ng-cytoscape-demo:build:production"
+              "browserTarget": "cytoscape-ng-demo:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ng-cytoscape-demo:build"
+            "browserTarget": "cytoscape-ng-demo:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ng-cytoscape-demo/src/test.ts",
-            "polyfills": "projects/ng-cytoscape-demo/src/polyfills.ts",
-            "tsConfig": "projects/ng-cytoscape-demo/tsconfig.spec.json",
-            "karmaConfig": "projects/ng-cytoscape-demo/karma.conf.js",
+            "main": "projects/cytoscape-ng-demo/src/test.ts",
+            "polyfills": "projects/cytoscape-ng-demo/src/polyfills.ts",
+            "tsConfig": "projects/cytoscape-ng-demo/tsconfig.spec.json",
+            "karmaConfig": "projects/cytoscape-ng-demo/karma.conf.js",
             "assets": [
-              "projects/ng-cytoscape-demo/src/favicon.ico",
-              "projects/ng-cytoscape-demo/src/assets"
+              "projects/cytoscape-ng-demo/src/favicon.ico",
+              "projects/cytoscape-ng-demo/src/assets"
             ],
             "styles": [
-              "projects/ng-cytoscape-demo/src/styles.scss"
+              "projects/cytoscape-ng-demo/src/styles.scss"
             ],
             "scripts": []
           }
@@ -101,9 +106,9 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/ng-cytoscape-demo/tsconfig.app.json",
-              "projects/ng-cytoscape-demo/tsconfig.spec.json",
-              "projects/ng-cytoscape-demo/e2e/tsconfig.json"
+              "projects/cytoscape-ng-demo/tsconfig.app.json",
+              "projects/cytoscape-ng-demo/tsconfig.spec.json",
+              "projects/cytoscape-ng-demo/e2e/tsconfig.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -113,49 +118,49 @@
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "projects/ng-cytoscape-demo/e2e/protractor.conf.js",
-            "devServerTarget": "ng-cytoscape-demo:serve"
+            "protractorConfig": "projects/cytoscape-ng-demo/e2e/protractor.conf.js",
+            "devServerTarget": "cytoscape-ng-demo:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "ng-cytoscape-demo:serve:production"
+              "devServerTarget": "cytoscape-ng-demo:serve:production"
             }
           }
         }
       }
     },
-    "ng-cytoscape": {
+    "cytoscape-ng": {
       "projectType": "library",
-      "root": "projects/ng-cytoscape",
-      "sourceRoot": "projects/ng-cytoscape/src",
+      "root": "projects/cytoscape-ng",
+      "sourceRoot": "projects/cytoscape-ng/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/ng-cytoscape/tsconfig.lib.json",
-            "project": "projects/ng-cytoscape/ng-package.json"
+            "tsConfig": "projects/cytoscape-ng/tsconfig.lib.json",
+            "project": "projects/cytoscape-ng/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/ng-cytoscape/tsconfig.lib.prod.json"
+              "tsConfig": "projects/cytoscape-ng/tsconfig.lib.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ng-cytoscape/src/test.ts",
-            "tsConfig": "projects/ng-cytoscape/tsconfig.spec.json",
-            "karmaConfig": "projects/ng-cytoscape/karma.conf.js"
+            "main": "projects/cytoscape-ng/src/test.ts",
+            "tsConfig": "projects/cytoscape-ng/tsconfig.spec.json",
+            "karmaConfig": "projects/cytoscape-ng/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/ng-cytoscape/tsconfig.lib.json",
-              "projects/ng-cytoscape/tsconfig.spec.json"
+              "projects/cytoscape-ng/tsconfig.lib.json",
+              "projects/cytoscape-ng/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -167,5 +172,5 @@
   "cli": {
     "analytics": "be3a80a9-889b-40dd-a9f6-b0f280335b17"
   },
-  "defaultProject": "ng-cytoscape-demo"
+  "defaultProject": "cytoscape-ng-demo"
 }
