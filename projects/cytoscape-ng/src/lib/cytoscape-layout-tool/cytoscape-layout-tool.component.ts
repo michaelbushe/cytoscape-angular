@@ -86,7 +86,6 @@ class LayoutInfo {
           </div>
           <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('padding')">
             <div class="ui-inputgroup">
-              <span class="ui-chkbox-label">Padding</span>
               <input type="number" pInputText placeholder="Padding"
                      [(ngModel)]="layoutOptions.padding" name="padding"
                      pTooltip="padding around when fit"
@@ -416,6 +415,7 @@ export class CytoscapeLayoutToolComponent implements OnInit, AfterViewInit {
   set selectedLayoutInfo(value: any) {
     console.log(`updating this._selectedLayoutInfo from selected layout info ${JSON.stringify(value)}`)
     this._selectedLayoutInfo = value
+    this.layoutOptions = value.layout
   }
 
   @Output() layoutOptionsChange: EventEmitter<LayoutOptions> = new EventEmitter<LayoutOptions>()
@@ -435,7 +435,6 @@ export class CytoscapeLayoutToolComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    let differs = false
     this.layoutForm.form.valueChanges.subscribe(change => {
       console.log(`form change: ${JSON.stringify(change)}
                       \nwith form: , ${JSON.stringify(this.selectedLayoutInfo)}
@@ -446,7 +445,7 @@ export class CytoscapeLayoutToolComponent implements OnInit, AfterViewInit {
         console.log(`Form changed to ${this.selectedLayoutInfo.name} from ${this.layoutOptions.name}`)
         // return
       }
-      const newLayoutOptions = {...this.selectedLayoutInfo, ...change, ...{ name: this.selectedLayoutInfo.name} }
+      const newLayoutOptions = {...this.selectedLayoutInfo, ...change }
       console.log('setting new layoutOptions:', JSON.stringify(newLayoutOptions))
       this.layoutOptions = newLayoutOptions
     })
@@ -456,7 +455,7 @@ export class CytoscapeLayoutToolComponent implements OnInit, AfterViewInit {
     let matchingInfo = this.getLayoutInfoForName(name)
     if (matchingInfo) {
       console.log('Got matching info ', JSON.stringify(matchingInfo))
-      matchingInfo.layout = {...matchingInfo.layout, ...layoutOptions}
+      matchingInfo.layout = { ...layoutOptions}
       console.log('new matching info: ', JSON.stringify(matchingInfo))
     } else {
       console.warn(`Did you pass a new kind of layout?  The layout name ${name} was not found, adding a new one to the list`)
