@@ -1,6 +1,14 @@
 {
   "name": "cytoscape-ng",
-  "version": "0.1.1",
+  "version": "0.2.1",
+  "description": "A Angular 9+ component for the cytoscape.js library.",
+  "author": "Michael Bushe mike@MindfulSoftware.com",
+  "repository": "https://github.com/michaelbushe/ng-cytoscape.git",
+  "homepage": "https://github.com/michaelbushe/ng-cytoscape",
+  "keywords": [
+    "cytoscape", "cytoscape.js", "angular", "graph", "bioinformatics", "finance", "javascript", "typescript", "component"
+  ],
+  "license": "MIT",
   "peerDependencies": {
     "@angular/common": "^9.1.1",
     "@angular/core": "^9.1.1",
