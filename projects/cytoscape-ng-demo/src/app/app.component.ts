@@ -45,7 +45,7 @@ declare var cytoscape: any
                        [layoutOptions]="bigGraphLayoutOptions">
 
       </cytoscape-graph>
-      <h4>Graph 2 (Layout: {{graph3LayoutOptions.name}})</h4>
+      <h4>Graph 2 (Layout: {{graph2LayoutOptions.name}})</h4>
       <cytoscape-graph-toolbar [(layoutOptions)]="graph2LayoutOptions"
                                [showToolbarButtons]="true"
                                (layoutOptionsChange)="layoutToolbarChange($event)"
@@ -60,6 +60,10 @@ declare var cytoscape: any
                        [layoutOptions]="graph2LayoutOptions">
 
       </cytoscape-graph>
+      <h4>Graph 3 (Layout: {{graph3LayoutOptions.name}})</h4>
+      <cytoscape-graph-toolbar [(layoutOptions)]="graph3LayoutOptions"
+                             [showToolbarButtons]="true">
+      </cytoscape-graph-toolbar>
       <cytoscape-graph title="Dagre One Two"
                        class="small-graph"
                        debug="true"
@@ -68,8 +72,6 @@ declare var cytoscape: any
                        [edges]="graph3Edges"
                        [layoutOptions]="graph3LayoutOptions">
       </cytoscape-graph>
-      <cytoscape-graph-toolbar [(layoutOptions)]="graph3LayoutOptions"
-                               [showToolbarButtons]="true"></cytoscape-graph-toolbar>
   `,
   styles: [
     `
@@ -83,11 +85,13 @@ declare var cytoscape: any
       .medium-graph {
         width: 600px;
         height: 600px;
+        border: 1px solid rgb(77, 122, 13);
       }
 
       .small-graph {
         width: 200px;
         height: 200px;
+        border: 1px solid rgb(77, 122, 13);
       }
     `
   ]
