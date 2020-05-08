@@ -1,6 +1,53 @@
 # NgCytoscapeProject
 Angular component for [Cytoscape.js](https://js.cytoscape.org) graphs.
 
+## How to Deploy?
+How can you deploy your app so other can see it on the web, 
+distributing it to caching servers to users around the world
+load the app quickly, be able to release a new version and
+then rollback to any old version, for free?  Create a new app on
+[Google Firebase](console.firebase.google.com)
+
+This demo is deployed on firebase [here](https://cytoscape-ng.firebase-app.com)
+
+Login and create a new firebase app, then in the app's Firebase console click on
+"Hosting" and then "Get Started with Hosting" 
+follow the directions to install the Firebase CLI. 
+On the step to init your app, first build your Angular app with:
+ 
+``ng build --prod``
+
+The build will be in dist/.
+
+Then in a new directory initialize your firebase app:
+``firebase login``
+``firebase init``
+
+Choose "Hosting: Configure and deploy Firebase Hosting sites" with the spacebar and press enter.
+
+Choose "Use and existing project" with the spacebar, press enter and then when prompted what
+to use as the public directory, choose ../dist/ (or perhaps ../dist/(project) if you have a
+multi-project angular workspace like this demo + library workspace.)
+
+Keep public as the directory and "Y" to configure as a single-page app.
+
+To test, run:
+``firebase deploy``
+
+And you should see the app that firebase creates as a default in the ./public directory
+at the url the command displays.
+
+To change the app from ./public, remove the ./public directory and then change the
+firebase.json file to point to ./dist/(app) instead of ./public
+  "hosting": {
+    "public": "dist/cytoscape-ng-demo",
+    
+Save and again run:
+``firebase deploy``
+    
+
+CORS Whitelisting - make sure 
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.0.
 Using the commands: 
 

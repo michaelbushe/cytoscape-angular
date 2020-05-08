@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CytoscapeGraphComponent } from './cytoscape-ng.component'
+import { CytoscapeGraphComponent } from './cytoscape-graph.component'
 import { CytoscapeGraphToolbarComponent } from './cytoscape-graph-toolbar/cytoscape-graph-toolbar.component'
 import {
   ButtonModule,

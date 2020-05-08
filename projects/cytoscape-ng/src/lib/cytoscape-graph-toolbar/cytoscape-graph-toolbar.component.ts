@@ -1,36 +1,48 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
-import { LayoutOptions, Stylesheet } from 'cytoscape'
+import { EdgeDefinition, LayoutOptions, NodeDefinition, Stylesheet } from 'cytoscape'
 @Component({
   selector: 'cytoscape-graph-toolbar',
   template: `
-    <div>
-      <div class="layoutTool" *ngIf="showToolbarButtons">
-        <p-overlayPanel #layoutToolbaroverlay>
-          <ng-template pTemplate>
-            <cytoscape-layout-tool [(layoutOptions)]="layoutOptions"></cytoscape-layout-tool>
-          </ng-template>
-        </p-overlayPanel>
-        <p-button *ngIf="showToolbarButtons" label="Layout" pTooltip="Layout settings..."
-                  icon="pi pi-sliders-v" (click)="layoutToolbaroverlay.toggle($event)"></p-button>
-        <p-overlayPanel #styleToolbaroverlay>
-          <ng-template pTemplate>
-            <cytoscape-style-tool [(styles)]="styles"></cytoscape-style-tool>
-          </ng-template>
-        </p-overlayPanel>
-        <p-button *ngIf="showToolbarButtons" label="Style" pTooltip="Styling..."
-                  icon="pi pi-palette"></p-button>
-      </div>
+    <div class="toolbar-container">
+      <p-overlayPanel #layoutToolbaroverlay>
+        <ng-template pTemplate>
+          <cytoscape-layout-tool [(layoutOptions)]="layoutOptions"></cytoscape-layout-tool>
+        </ng-template>
+      </p-overlayPanel>
+      <p-button *ngIf="showToolbarButtons" label="{{layoutOptions.name | titlecase }} Layout" pTooltip="Layout settings..."
+                icon="pi pi-sliders-v" (click)="layoutToolbaroverlay.toggle($event)"></p-button>
+      <p-overlayPanel #styleToolbaroverlay>
+        <ng-template pTemplate>
+          <cytoscape-style-tool [(styles)]="styles"></cytoscape-style-tool>
+        </ng-template>
+      </p-overlayPanel>
+      <p-button *ngIf="showToolbarButtons" label="Style" pTooltip="Styling..."
+                icon="pi pi-palette"></p-button>
+      <span class="graph-data" *ngIf="nodes">{{nodes.length}} Nodes &nbsp;</span>
+      <span class="graph-data" *ngIf="edges">{{edges.length}} Edges</span>
     </div>
   `,
   styles: [
      `
+      .toolbar-container {
+        display: flex;
+        align-items: center;
+      }
+
+      .graph-data {
+      }
+
       p-button {
-        padding-left: 4px;
+        padding: 4px;
       }
     `
   ],
 })
 export class CytoscapeGraphToolbarComponent implements OnInit {
+  @Input()
+  nodes: NodeDefinition[]
+  @Input()
+  edges: EdgeDefinition[]
 
   _layoutOptions: LayoutOptions
   @Input()

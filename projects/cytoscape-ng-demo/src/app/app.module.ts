@@ -14,6 +14,7 @@ import {
   TabViewModule,
   TooltipModule
 } from 'primeng';
+import { HttpClientModule } from '@angular/common/http'
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import {
     ButtonModule,
     CheckboxModule,
     CytoscapeNgModule,
+    HttpClientModule,
     InputTextModule,
     MenubarModule,
     TabViewModule,
