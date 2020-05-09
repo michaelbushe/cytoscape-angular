@@ -1,5 +1,5 @@
-# NgCytoscapeProject
-Angular component for [Cytoscape.js](https://js.cytoscape.org) graphs.
+# Cytoscape for Angular
+Angular component for [Cytoscape](https://cytoscape.org) graphs.
 
 ## How to Deploy?
 How can you deploy your app so other can see it on the web, 
