@@ -1,5 +1,10 @@
 # Cytoscape for Angular
-Angular component for [Cytoscape](https://cytoscape.org) graphs.
+Angular component for [Cytoscape](https://cytoscape.org) graphs.  [Demo:](https://cytoscape-angular.web.app)
+
+To use, first create an angular application with the [Angular CLI](https://github.com/angular/angular-cli) 
+
+Then import the CytoscapeGraphModule and use a <cytoscape-graph> element in a template, see the demo code
+in projects/cytoscape-angular-demo/src/app/app.component.ts.
 
 ## How to Deploy?
 How can you deploy your app so other can see it on the web, 
