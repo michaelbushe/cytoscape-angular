@@ -44,4 +44,4 @@ import { FluidFormFieldsetComponent } from './fluid-form-fieldset/fluid-form-fie
     CytoscapeStyleToolComponent
   ]
 })
-export class CytoscapeNgModule { }
+export class CytoscapeAngularModule { }

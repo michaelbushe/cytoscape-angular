@@ -44,7 +44,7 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-/projects/cytoscape-ng/node_modules/.cache/angular-build-dl/
+/projects/cytoscape-angular/node_modules/.cache/angular-build-dl/
 
 # Logs
 logs

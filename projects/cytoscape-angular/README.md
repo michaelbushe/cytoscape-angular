@@ -1,6 +1,6 @@
 # NgCytoscape
 
- cytoscape-ng is an Angular 9+ component for [Cytoscape](https://js.cytoscape.org/) graphs.
+ cytoscape-angular is an Angular 9+ component for [Cytoscape](https://js.cytoscape.org/) graphs.
  The component is intended to fully cover the Cytoscape API by providing a
  component that allows every Cytoscape bit to be twiddled and all the properties of the
  graph including layout and styles.  The properties are intended to be fully exposed 
@@ -39,20 +39,20 @@ This library was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Code scaffolding
 
-Run `ng generate component component-name --project cytoscape-ng` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project cytoscape-ng`.
-> Note: Don't forget to add `--project cytoscape-ng` or else it will be added to the default project in your `angular.json` file. 
+Run `ng generate component component-name --project cytoscape-angular` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project cytoscape-angular`.
+> Note: Don't forget to add `--project cytoscape-angular` or else it will be added to the default project in your `angular.json` file. 
 
 ## Build
 
-Run `ng build cytoscape-ng` to build the project. The build artifacts will be stored in the `dist/` directory.
+Run `ng build cytoscape-angular` to build the project. The build artifacts will be stored in the `dist/` directory.
 
 ## Publishing
 
-After building your library with `ng build cytoscape-ng`, go to the dist folder `cd dist/cytoscape-ng` and run `npm publish`.
+After building your library with `ng build cytoscape-angular`, go to the dist folder `cd dist/cytoscape-angular` and run `npm publish`.
 
 ## Running unit tests
 
-Run `ng test cytoscape-ng` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `ng test cytoscape-angular` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
 ## Further help
 

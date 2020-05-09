@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'cytoscape-ng-demo'`, () => {
+  it(`should have as title 'cytoscape-angular-demo'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('cytoscape-ng-demo');
+    expect(app.title).toEqual('cytoscape-angular-demo');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('cytoscape-ng-demo app is running!');
+    expect(compiled.querySelector('.content span').textContent).toContain('cytoscape-angular-demo app is running!');
   });
 });

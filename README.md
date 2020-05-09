@@ -8,7 +8,7 @@ load the app quickly, be able to release a new version and
 then rollback to any old version, for free?  Create a new app on
 [Google Firebase](console.firebase.google.com)
 
-This demo is deployed on firebase [here](https://cytoscape-ng.firebase-app.com)
+This demo is deployed on firebase [here](https://cytoscape-angular.firebase-app.com)
 
 Login and create a new firebase app, then in the app's Firebase console click on
 "Hosting" and then "Get Started with Hosting" 
@@ -40,7 +40,7 @@ at the url the command displays.
 To change the app from ./public, remove the ./public directory and then change the
 firebase.json file to point to ./dist/(app) instead of ./public
   "hosting": {
-    "public": "dist/cytoscape-ng-demo",
+    "public": "dist/cytoscape-angular-demo",
     
 Save and again run:
 ``firebase deploy``
@@ -51,11 +51,11 @@ CORS Whitelisting - make sure
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.0.
 Using the commands: 
 
-` ng new cytoscape-ng-project --create-application=false -s -t -p mf`
+` ng new cytoscape-angular-project --create-application=false -s -t -p mf`
 
-`ng generate application cytoscape-ng-demo`
+`ng generate application cytoscape-angular-demo`
 
-`ng generate library cytoscape-ng`
+`ng generate library cytoscape-angular`
 
 ## Development server
 

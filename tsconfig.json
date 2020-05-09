@@ -16,9 +16,9 @@
       "dom"
     ],
     "paths": {
-      "cytoscape-ng": [
-        "dist/cytoscape-ng/cytoscape-ng",
-        "dist/cytoscape-ng"
+      "cytoscape-angular": [
+        "dist/cytoscape-angular/cytoscape-angular",
+        "dist/cytoscape-angular"
       ]
     }
   },

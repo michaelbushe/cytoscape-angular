@@ -1,5 +1,5 @@
 {
-  "name": "cytoscape-ng",
+  "name": "cytoscape-angular",
   "version": "0.2.1",
   "description": "A Angular 9+ component for the cytoscape.js library.",
   "author": "Michael Bushe mike@MindfulSoftware.com",

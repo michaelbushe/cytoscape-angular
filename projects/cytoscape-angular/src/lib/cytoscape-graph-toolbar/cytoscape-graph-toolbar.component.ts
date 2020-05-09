@@ -3,21 +3,33 @@ import { EdgeDefinition, LayoutOptions, NodeDefinition, Stylesheet } from 'cytos
 @Component({
   selector: 'cytoscape-graph-toolbar',
   template: `
-    <div class="toolbar-container">
-      <p-overlayPanel #layoutToolbaroverlay>
+    <div class="toolbar-container"
+         [class.row-layout]="direction === 'row'"
+         [class.column-layout]="direction === 'column'">
+      <p-overlayPanel #layoutToolbaroverlay
+                      [dismissable]="true" [showCloseIcon]="true"
+      >
         <ng-template pTemplate>
           <cytoscape-layout-tool [(layoutOptions)]="layoutOptions"></cytoscape-layout-tool>
         </ng-template>
       </p-overlayPanel>
-      <p-button *ngIf="showToolbarButtons" label="{{layoutOptions.name | titlecase }} Layout" pTooltip="Layout settings..."
-                icon="pi pi-sliders-v" (click)="layoutToolbaroverlay.toggle($event)"></p-button>
-      <p-overlayPanel #styleToolbaroverlay>
+      <p-button *ngIf="showToolbarButtons"
+                label="{{layoutOptions.name | titlecase }} Layout"
+                [class.max-button-width]="direction === 'column'"
+                pTooltip="Layout settings..."
+                icon="pi pi-sliders-v"
+                (click)="layoutToolbaroverlay.toggle($event)"></p-button>
+      <p-overlayPanel #styleToolbaroverlay [dismissable]="true" [showCloseIcon]="true">
         <ng-template pTemplate>
           <cytoscape-style-tool [(styles)]="styles"></cytoscape-style-tool>
         </ng-template>
       </p-overlayPanel>
-      <p-button *ngIf="showToolbarButtons" label="Style" pTooltip="Styling..."
-                icon="pi pi-palette"></p-button>
+      <p-button *ngIf="showToolbarButtons"
+                [class.max-button-width]="direction === 'column'"
+                label="Style"
+                pTooltip="Styling..."
+                icon="pi pi-palette">
+      </p-button>
       <span class="graph-data" *ngIf="nodes">{{nodes.length}} Nodes &nbsp;</span>
       <span class="graph-data" *ngIf="edges">{{edges.length}} Edges</span>
     </div>
@@ -26,14 +38,24 @@ import { EdgeDefinition, LayoutOptions, NodeDefinition, Stylesheet } from 'cytos
      `
       .toolbar-container {
         display: flex;
-        align-items: center;
       }
 
-      .graph-data {
+      .row-layout {
+        flex-direction: row;
+        align-items: center;
+        padding-bottom: 4px;
+      }
+
+      .column-layout {
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        padding-left: 4px;
       }
 
       p-button {
-        padding: 4px;
+        padding-bottom: 4px;
+        padding-right: 4px;
       }
     `
   ],
@@ -43,6 +65,8 @@ export class CytoscapeGraphToolbarComponent implements OnInit {
   nodes: NodeDefinition[]
   @Input()
   edges: EdgeDefinition[]
+  @Input()
+  direction: 'column' | 'row' = 'column'
 
   _layoutOptions: LayoutOptions
   @Input()

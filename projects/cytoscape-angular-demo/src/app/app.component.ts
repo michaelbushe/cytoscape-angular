@@ -8,43 +8,46 @@ declare var cytoscape: any
 @Component({
   selector: 'app-root',
   template: `
-    <h2>Cytoscape-NG Demo</h2>
+    <h2>cytoscape-angular Demo</h2>
     <p>This web app demonstrates the use of
-      <a href="https://github.com/michaelbushe/cytoscape-ng">cytoscape-ng</a>, an open source (MIT license) library of
+      <a href="https://github.com/michaelbushe/cytoscape-angular">cytoscape-angular</a>, an open source (MIT license) library of
       <a href="https://angular.io">Angular</a> components for <a href="https://cytoscape.org/">Cytoscape</a>,
       a widely used graphing tool and the de facto standard graphing tool for bioinformatics.</p>
-    <p>cytoscape-ng makes it easy to create cytoscape graphs in high-quality web and mobile applications quickly.
+    <p>cytoscape-angular makes it easy to create cytoscape graphs in high-quality web and mobile applications quickly.
       The source code of this demo is intended to be a starting point for creating a web app for cytoscape
       graphs with canned or live streaming data.  The components for interactive layout and styling
       can help to quickly refine graphs.
-    <p>cytoscape-ng provides a complete API for <a href="https://js.cytoscape.org/">cytoscape.js</a> in an Angular
+    <p>cytoscape-angular provides a complete API for <a href="https://js.cytoscape.org/">cytoscape.js</a> in an Angular
       component. Angular is a a comprehensive user interface framework that creates fully deployable web and mobile
       applications quickly. </p>
-    <p>cytoscape-ng also provides toolbar components for adjusting layout and style on the fly and
+    <p>cytoscape-angular also provides toolbar components for adjusting layout and style on the fly and
       saving the resulting cytoscape layout json and stylesheet json for rapid graph customization.</p>
     <p>Another app for minds by <a href="https://www.mindfulsoftware.com" style="color: rgb(77, 122, 13)">Mindful Software</a> with
       <a href="https://www.kaavio.com" style="color: rgb(34, 23, 183)">Kaavio</a>.
       Data copied from <a href="http://graphspace.org/">Graphspace</a>.
       App and data deployed to <a href="http://firebase.google.com/">Firebase</a>.
-      The cytoscape-ng README has directions for deploying your app and canned data to Firebase for (probably) free.
+      The cytoscape-angular README has directions for deploying your app and canned data to Firebase for (probably) free.
     </p>
       <h4>TGF-beta-Receptor</h4>
-      <cytoscape-graph-toolbar [(layoutOptions)]="bigGraphLayoutOptions"
-                               [showToolbarButtons]="true"
-                               (layoutOptionsChange)="layoutToolbarChange($event)"
-                               [nodes]="bigGraphNodes"
-                               [edges]="bigGraphEdges"
-      ></cytoscape-graph-toolbar>
-      <cytoscape-graph title="TGF-beta-Receptor"
-                       class="medium-graph"
-                       debug="true"
-                       showToolbar="true"
-                       [nodes]="bigGraphNodes"
-                       [edges]="bigGraphEdges"
-                       [style]="bigGraphStylesheet"
-                       [layoutOptions]="bigGraphLayoutOptions">
+      <div style="display: flex;">
+        <cytoscape-graph title="TGF-beta-Receptor"
+                         class="medium-graph"
+                         debug="true"
+                         showToolbar="true"
+                         [nodes]="bigGraphNodes"
+                         [edges]="bigGraphEdges"
+                         [style]="bigGraphStylesheet"
+                         [layoutOptions]="bigGraphLayoutOptions">
 
-      </cytoscape-graph>
+        </cytoscape-graph>
+        <cytoscape-graph-toolbar [(layoutOptions)]="bigGraphLayoutOptions"
+                                 [showToolbarButtons]="true"
+                                 (layoutOptionsChange)="layoutToolbarChange($event)"
+                                 [nodes]="bigGraphNodes"
+                                 [edges]="bigGraphEdges"
+                                 direction="column"
+        ></cytoscape-graph-toolbar>
+      </div>
       <h4>Graph 2 (Layout: {{graph2LayoutOptions.name}})</h4>
       <cytoscape-graph-toolbar [(layoutOptions)]="graph2LayoutOptions"
                                [showToolbarButtons]="true"
@@ -97,7 +100,7 @@ declare var cytoscape: any
   ]
 })
 export class AppComponent implements OnInit{
-  title = 'cytoscape-ng-demo';
+  title = 'cytoscape-angular-demo';
   bigGraphNodes: NodeDefinition[] = []
   bigGraphEdges: EdgeDefinition[] = []
   graph2Nodes: NodeDefinition[] = []
@@ -262,8 +265,8 @@ export class AppComponent implements OnInit{
   // at ke (cytoscape.min.js:23)
   // at new Re (cytoscape.min.js:23)
   // at eo.add (cytoscape.min.js:23)
-  // at CytoscapeGraphComponent.render (cytoscape-ng.js:86)
-  // at CytoscapeGraphComponent.ngOnChanges (cytoscape-ng.js:37)
+  // at CytoscapeGraphComponent.render (cytoscape-angular.js:86)
+  // at CytoscapeGraphComponent.ngOnChanges (cytoscape-angular.js:37)
   // at CytoscapeGraphComponent.wrapOnChangesHook_inPreviousChangesStorage (core.js:27246)
   // at callHook (core.js:4774)
   // at callHooks (core.js:4734)

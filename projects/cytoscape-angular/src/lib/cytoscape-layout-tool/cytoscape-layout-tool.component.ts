@@ -60,8 +60,6 @@ class LayoutInfo {
   template: `
     <div style="display: flex;">
       <div class="layoutHeader">Layouts</div>
-      <div>&nbsp;</div>
-      <button pButton class="close-button" style="height: 18px;">&nbsp;X&nbsp;</button>
     </div>
     <p-dropdown
         name="selectedLayoutInfo"

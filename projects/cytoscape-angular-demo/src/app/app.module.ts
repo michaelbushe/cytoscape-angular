@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CytoscapeNgModule } from 'cytoscape-ng'
+import { CytoscapeAngularModule } from 'cytoscape-angular'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import {
   ButtonModule,
@@ -26,14 +26,13 @@ import { HttpClientModule } from '@angular/common/http'
     BrowserAnimationsModule,
     ButtonModule,
     CheckboxModule,
-    CytoscapeNgModule,
+    CytoscapeAngularModule,
     HttpClientModule,
     InputTextModule,
     MenubarModule,
     TabViewModule,
     TooltipModule,
     OverlayPanelModule,
-    CytoscapeNgModule
   ],
   providers: [],
   bootstrap: [AppComponent]
