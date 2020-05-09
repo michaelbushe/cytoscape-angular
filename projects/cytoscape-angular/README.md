@@ -1,20 +1,25 @@
-# NgCytoscape
+# Cytoscape Angular
 
- cytoscape-angular is an Angular 9+ component for [Cytoscape](https://js.cytoscape.org/) graphs.
- The component is intended to fully cover the Cytoscape API by providing a
- component that allows every Cytoscape bit to be twiddled and all the properties of the
- graph including layout and styles.  The properties are intended to be fully exposed 
- as visual widgets that can enhance a cytoscape graph on the fly.  In addition to 
- all the layouts that come with cytoscape, the dagre layout for directed graphs is
- included.
+ cytoscape-angular is an Angular 9+ component for [Cytoscape](https://cytoscape.org/) graphs.
+ The intent is to provide an Angular component that fully covers the Cytoscape API via 
+ [cytoscape.js](https://js.cytoscape.org), it's getting close to full coverage.
+   
+ Other components allows every Cytoscape bit to be twiddled - a toolbar and forms to 
+ edit all the properties of the graph including layout parameters and styles that can enhance 
+ a cytoscape graph on the fly.  
+ 
+ In addition to all the layouts that come with cytoscape, the dagre layout for directed graphs is
+ included.  Other generic layouts will be supported in a future release.
  
  ## Usage 
+ For a full demo see the sister project in this repo, cytoscape-angular-demo.
+ 
  If you don't have an angular app, create one, it's so easy.  Install and use the
  [Angular CLI](https://github.com/angular/angular-cli)
   
  In a template in your app add the graph 
  
- <mf-cytoscape [nodes]="fooNodes" [edges]="fooEdges"/> 
+ <cytoscape-graph [nodes]="fooNodes" [edges]="fooEdges"/> 
  
  @Component
  export class FooComponent implements OnInit {
@@ -30,10 +35,7 @@
     }
  }
  
- This library also comes with graph, style and layout UI components that
- update the graph on the fly, see the demo.
-
-Brought to you by Michael Bushe at Mindful Software, michael@mindfulsoftware.com.
+Brought to you by [Michael Bushe](michael@mindfulsoftware.com) from [Mindful Software](https://www.mindfulsoftware.com) and [Kaavio](https://www.kaavio.com) .
 
 This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.1.
 
