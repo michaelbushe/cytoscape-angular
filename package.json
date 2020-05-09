@@ -74,6 +74,6 @@
     "zone.js": "^0.10.3"
   },
   "dependencies": {
-    "cytoscape-angular": "^0.4.1"
+    "cytoscape-angular": "^0.4.2"
   }
 }
