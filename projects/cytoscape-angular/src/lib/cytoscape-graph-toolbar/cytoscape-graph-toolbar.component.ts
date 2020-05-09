@@ -16,7 +16,7 @@ import { EdgeDefinition, LayoutOptions, NodeDefinition, Stylesheet } from 'cytos
       <p-button *ngIf="showToolbarButtons"
                 label="{{layoutOptions.name | titlecase }} Layout"
                 [class.max-button-width]="direction === 'column'"
-                pTooltip="Layout settings..."
+                pTooltip="Layout Settings..."
                 icon="pi pi-sliders-v"
                 (click)="layoutToolbaroverlay.toggle($event)"></p-button>
       <p-overlayPanel #styleToolbaroverlay [dismissable]="true" [showCloseIcon]="true">
@@ -66,7 +66,7 @@ export class CytoscapeGraphToolbarComponent implements OnInit {
   @Input()
   edges: EdgeDefinition[]
   @Input()
-  direction: 'column' | 'row' = 'column'
+  direction: 'column' | 'row' = 'row'
 
   _layoutOptions: LayoutOptions
   @Input()

@@ -8,7 +8,7 @@ declare var cytoscape: any
 @Component({
   selector: 'app-root',
   template: `
-    <h2>cytoscape-angular Demo</h2>
+    <h2>Cytoscape-Angular Demo</h2>
     <p>This web app demonstrates the use of
       <a href="https://github.com/michaelbushe/cytoscape-angular">cytoscape-angular</a>, an open source (MIT license) library of
       <a href="https://angular.io">Angular</a> components for <a href="https://cytoscape.org/">Cytoscape</a>,
