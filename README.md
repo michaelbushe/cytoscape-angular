@@ -1,5 +1,5 @@
 # Cytoscape for Angular
-Angular component for [Cytoscape](https://cytoscape.org) graphs.  [Demo:](https://cytoscape-angular.web.app)
+Angular component for [Cytoscape](https://cytoscape.org) graphs.  See [demo].(https://cytoscape-angular.web.app)
 
 To use, first create an angular application with the [Angular CLI](https://github.com/angular/angular-cli) 
 

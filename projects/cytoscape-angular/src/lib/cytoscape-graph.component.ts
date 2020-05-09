@@ -13,7 +13,9 @@ declare var cytoscape: any
 @Component({
   selector: 'cytoscape-graph',
   template: `
-    <div #cyGraph class="graphWrapper"></div>
+    <p-progressBar *ngIf="loading" mode="indeterminate"></p-progressBar>
+    <div #cyGraph class="graphWrapper">
+    </div>
   `,
   styles: [`
     .graphWrapper {
@@ -89,19 +91,23 @@ export class CytoscapeGraphComponent implements OnChanges, AfterViewInit {
 
   cyOptions: CytoscapeOptions
   private cy: cy.Core
+  loading: boolean = false
 
   constructor(private el: ElementRef) {
   }
 
   public ngOnChanges(changes: SimpleChanges): any {
-    console.log(`ngOnChanges this.nodes?.length : ${this.nodes?.length}, this.edges?.length : ${this.edges?.length}`)
-    console.log(`simpleChange ${JSON.stringify(changes.keys)}`)
-    this.render()
+    this.loading = true
+    setTimeout(()=> {
+      this.render()
+      setTimeout(() => {
+        this.loading = false
+      }, 500)
+    }, 0)
   }
 
 
   ngAfterViewInit(): void {
-    console.log(`ngAfterViewInit this.nodes?.length : ${this.nodes?.length}, this.edges?.length : ${this.edges?.length}`)
     this.render()
   }
 
@@ -155,11 +161,6 @@ export class CytoscapeGraphComponent implements OnChanges, AfterViewInit {
     console.log(`laying out ${this.nodes.length} nodes with ${this.layoutOptions.name}`)
     this.cy.layout(this.layoutOptions).run()
     console.log(`ended redraw`)
-    console.log(`drawn nodes: ${JSON.stringify(this.nodes)}`)
-    // TODO - all events
-    // ready: event => {
-    //   console.log('cyto ready')
-    // },
   }
 }
 

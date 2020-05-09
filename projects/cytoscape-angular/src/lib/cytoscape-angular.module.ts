@@ -6,7 +6,7 @@ import {
   DropdownModule,
   FieldsetModule,
   InputSwitchModule,
-  OverlayPanelModule,
+  OverlayPanelModule, ProgressBarModule, ProgressSpinnerModule, SpinnerModule,
   TooltipModule
 } from 'primeng'
 import { FormsModule } from '@angular/forms'
@@ -35,7 +35,13 @@ import { FluidFormFieldsetComponent } from './fluid-form-fieldset/fluid-form-fie
     OverlayPanelModule,
     TooltipModule,
     CommonModule,
-    ButtonModule
+    ButtonModule,
+    ProgressSpinnerModule,
+    CommonModule,
+    ProgressBarModule,
+    CommonModule,
+    ProgressSpinnerModule,
+    SpinnerModule
   ],
   exports: [
     CytoscapeGraphComponent,
