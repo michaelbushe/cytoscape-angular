@@ -13,11 +13,27 @@ declare var cytoscape: any
 @Component({
   selector: 'cytoscape-graph',
   template: `
-    <p-progressBar *ngIf="loading" mode="indeterminate"></p-progressBar>
+    <p-progressSpinner *ngIf="loading" [style]="{width: '100px', height: '100px'}" strokeWidth="8" fill="#EEEEEE" animationDuration=".5s"></p-progressSpinner>
     <div #cyGraph class="graphWrapper">
     </div>
   `,
   styles: [`
+    @keyframes ui-progress-spinner-color {
+      100%,
+      0% {
+        stroke: #d62d20;
+      }
+      40% {
+        stroke: #0057e7;
+      }
+      66% {
+        stroke: #008744;
+      }
+      80%,
+      90% {
+        stroke: #ffa700;
+      }
+    }
     .graphWrapper {
       height: 100%;
       width: 100%;
@@ -97,12 +113,13 @@ export class CytoscapeGraphComponent implements OnChanges, AfterViewInit {
   }
 
   public ngOnChanges(changes: SimpleChanges): any {
+    console.log('cytoscape graph component ngOnChanges.')
     this.loading = true
     setTimeout(()=> {
       this.render()
       setTimeout(() => {
         this.loading = false
-      }, 500)
+      }, 0)
     }, 0)
   }
 

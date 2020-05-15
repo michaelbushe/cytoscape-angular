@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core'
 import { EdgeDefinition, NodeDefinition } from 'cytoscape'
 import dagre from 'cytoscape-dagre'
 import { CyNodeService } from './cy-node.service'
+import { CytoscapeGraphComponent, DagreLayoutOptionsImpl, PresetLayoutOptionsImpl } from 'cytoscape-angular'
 
 declare var cytoscape: any
 
@@ -10,71 +11,75 @@ declare var cytoscape: any
   template: `
     <h2>Cytoscape-Angular Demo</h2>
     <p>This web app demonstrates the use of
-      <a href="https://github.com/michaelbushe/cytoscape-angular">cytoscape-angular</a>, an open source (MIT license) library of
+      <a href="https://github.com/michaelbushe/cytoscape-angular">cytoscape-angular</a>, an open source (MIT license)
+      library of
       <a href="https://angular.io">Angular</a> components for <a href="https://cytoscape.org/">Cytoscape</a>,
       a widely used graphing tool and the de facto standard graphing tool for bioinformatics.</p>
     <p>cytoscape-angular makes it easy to create cytoscape graphs in high-quality web and mobile applications quickly.
       The source code of this demo is intended to be a starting point for creating a web app for cytoscape
-      graphs with canned or live streaming data.  The components for interactive layout and styling
+      graphs with canned or live streaming data. The components for interactive layout and styling
       can help to quickly refine graphs.
     <p>cytoscape-angular provides a complete API for <a href="https://js.cytoscape.org/">cytoscape.js</a> in an Angular
       component. Angular is a a comprehensive user interface framework that creates fully deployable web and mobile
       applications quickly. </p>
     <p>cytoscape-angular also provides toolbar components for adjusting layout and style on the fly and
       saving the resulting cytoscape layout json and stylesheet json for rapid graph customization.</p>
-    <p>Another app for minds by <a href="https://www.mindfulsoftware.com" style="color: rgb(77, 122, 13)">Mindful Software</a> with
+    <p>Another app for minds by <a href="https://www.mindfulsoftware.com" style="color: rgb(77, 122, 13)">Mindful
+      Software</a> with
       <a href="https://www.kaavio.com" style="color: rgb(34, 23, 183)">Kaavio</a>.
       Data copied from <a href="http://graphspace.org/">Graphspace</a>.
       App and data deployed to <a href="http://firebase.google.com/">Firebase</a>.
-      The cytoscape-angular README has directions for deploying your app and canned data to Firebase for (probably) free.
+      The cytoscape-angular README has directions for deploying your app and canned data to Firebase for (probably)
+      free.
     </p>
-      <h4>TGF-beta-Receptor</h4>
-      <div style="display: flex;">
-        <cytoscape-graph title="TGF-beta-Receptor"
-                         class="medium-graph"
-                         debug="true"
-                         showToolbar="true"
-                         [nodes]="bigGraphNodes"
-                         [edges]="bigGraphEdges"
-                         [style]="bigGraphStylesheet"
-                         [layoutOptions]="bigGraphLayoutOptions">
+    <h4>TGF-beta-Receptor</h4>
+    <div style="display: flex;">
+      <cytoscape-graph #biggraph title="TGF-beta-Receptor"
+                       class="medium-graph"
+                       debug="true"
+                       showToolbar="true"
+                       [nodes]="bigGraphNodes"
+                       [edges]="bigGraphEdges"
+                       [style]="bigGraphStylesheet"
+                       [layoutOptions]="bigGraphLayoutOptions">
 
-        </cytoscape-graph>
-        <cytoscape-graph-toolbar [(layoutOptions)]="bigGraphLayoutOptions"
-                                 [showToolbarButtons]="true"
-                                 (layoutOptionsChange)="layoutToolbarChange($event)"
-                                 [nodes]="bigGraphNodes"
-                                 [edges]="bigGraphEdges"
-                                 direction="column"
-        ></cytoscape-graph-toolbar>
-      </div>
-      <h4>Graph 2 (Layout: {{graph2LayoutOptions.name}})</h4>
-      <cytoscape-graph-toolbar [(layoutOptions)]="graph2LayoutOptions"
+      </cytoscape-graph>
+      <cytoscape-graph-toolbar [(layoutOptions)]="bigGraphLayoutOptions"
                                [showToolbarButtons]="true"
-                               (layoutOptionsChange)="layoutToolbarChange($event)"
+                               (layoutOptionsChange)="bigGraphLayoutToolbarChange($event)"
+                               [nodes]="bigGraphNodes"
+                               [edges]="bigGraphEdges"
+                               direction="column"
       ></cytoscape-graph-toolbar>
-      <cytoscape-graph title="Preset One Two"
-                       class="small-graph"
-                       debug="true"
-                       showToolbar="true"
-                       [nodes]="graph2Nodes"
-                       [edges]="graph2Edges"
-                       [style]="style"
-                       [layoutOptions]="graph2LayoutOptions">
+    </div>
+    <h4>Graph 2 (Layout: {{graph2LayoutOptions.name}})</h4>
+    <cytoscape-graph-toolbar [(layoutOptions)]="graph2LayoutOptions"
+                             [showToolbarButtons]="true"
+                             (layoutOptionsChange)="graph2LayoutToolbarChange($event)"
+    ></cytoscape-graph-toolbar>
+    <cytoscape-graph #graph2 title="Preset One Two"
+                     class="small-graph"
+                     debug="true"
+                     showToolbar="true"
+                     [nodes]="graph2Nodes"
+                     [edges]="graph2Edges"
+                     [style]="style"
+                     [layoutOptions]="graph2LayoutOptions">
 
-      </cytoscape-graph>
-      <h4>Graph 3 (Layout: {{graph3LayoutOptions.name}})</h4>
-      <cytoscape-graph-toolbar [(layoutOptions)]="graph3LayoutOptions"
-                             [showToolbarButtons]="true">
-      </cytoscape-graph-toolbar>
-      <cytoscape-graph title="Dagre One Two"
-                       class="small-graph"
-                       debug="true"
-                       showToolbar="true"
-                       [nodes]="graph3Nodes"
-                       [edges]="graph3Edges"
-                       [layoutOptions]="graph3LayoutOptions">
-      </cytoscape-graph>
+    </cytoscape-graph>
+    <h4>Graph 3 (Layout: {{graph3LayoutOptions.name}})</h4>
+    <cytoscape-graph-toolbar [(layoutOptions)]="graph3LayoutOptions"
+                             [showToolbarButtons]="true"
+                             (layoutOptionsChange)="graph3LayoutToolbarChange($event)">
+    </cytoscape-graph-toolbar>
+    <cytoscape-graph #graph3 title="Dagre One Two"
+                     class="small-graph"
+                     debug="true"
+                     showToolbar="true"
+                     [nodes]="graph3Nodes"
+                     [edges]="graph3Edges"
+                     [layoutOptions]="graph3LayoutOptions">
+    </cytoscape-graph>
   `,
   styles: [
     `
@@ -100,13 +105,20 @@ declare var cytoscape: any
   ]
 })
 export class AppComponent implements OnInit{
+  @ViewChild('biggraph')
+  bigGraph: CytoscapeGraphComponent
+
   title = 'cytoscape-angular-demo';
+  bigGraphLayoutOptions = new DagreLayoutOptionsImpl()
   bigGraphNodes: NodeDefinition[] = []
   bigGraphEdges: EdgeDefinition[] = []
+  graph2LayoutOptions = new PresetLayoutOptionsImpl()
   graph2Nodes: NodeDefinition[] = []
   graph2Edges: EdgeDefinition[] = []
+  graph3LayoutOptions = new PresetLayoutOptionsImpl()
   graph3Nodes: NodeDefinition[] = []
   graph3Edges: EdgeDefinition[] = []
+
   bigGraphStylesheet: any
   style = [{
       selector: 'node',
@@ -135,46 +147,6 @@ export class AppComponent implements OnInit{
       }
     }
   ]
-
-  presetLayoutOptions = {
-    name: 'preset',
-    ready: function(){console.log(' on preset layoutready')}, // on layoutready
-    stop: function(){console.log(' on preset layoutstop')} // on layoutstop
-  }
-
-  bigGraphLayoutOptions = this.presetLayoutOptions
-  graph2LayoutOptions = this.presetLayoutOptions
-
-  dagreLayoutOptions = {
-    name: 'dagre',
-    fit: true,
-    // name: 'preset',
-    // nodeSep: 1, // the separation between adjacent nodes in the same rank
-    // edgeSep: undefined, // the separation between adjacent edges in the same rank
-    // rankSep: undefined, // the separation between each rank in the layout
-    // rankDir: 'TB', // 'TB' for top to bottom flow, 'LR' for left to right,
-    // tslint:disable-next-line:max-line-length
-    // ranker: 'tight-tree', // Type of algorithm to assign a rank to each node in the input graph. Possible values: 'network-simplex', 'tight-tree' or 'longest-path'
-    // minLen: function( edge ){ return 1 }, // number of ranks to keep between the source and target of the edge
-    // edgeWeight: function( edge ){ return 1 }, // higher weight edges are generally made shorter and straighter than lower weight edges
-    //
-    // // general layout options
-    // fit: true, // whether to fit to viewport
-    // padding: 30, // fit padding
-    // spacingFactor: undefined, // Applies a multiplicative factor (>0) to expand or compress the overall area that the nodes take up
-    // nodeDimensionsIncludeLabels: false, // whether labels should be included in determining the space used by a node
-    // animate: false, // whether to transition the node positions
-    // tslint:disable-next-line:max-line-length
-    // animateFilter: function( node, i ){ return true; }, // whether to animate specific nodes when animation is on; non-animated nodes immediately go to their final positions
-    // animationDuration: 500, // duration of animation in ms if enabled
-    // animationEasing: undefined, // easing of animation if enabled
-    // boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
-    // transform: function( node, pos ){ return pos; }, // a function that applies a transform to the final node position
-    ready: function(){console.log(' on layoutready')}, // on layoutready
-    stop: function(){console.log(' on layoutstop')} // on layoutstop
-  }
-  graph3LayoutOptions = this.dagreLayoutOptions
-
 
   constructor(public cyNodeService: CyNodeService) {
   }
@@ -250,6 +222,11 @@ export class AppComponent implements OnInit{
     this.graph3Edges = [{"data":{"source":"1","target":"2","label":"OneToTwoLabel"}}]
   }
 
+  @HostListener('window:beforeunload', ['$event'])
+  ngOnDestroy() {
+    console.log(`on destroy`)
+  }
+
   private stampNodeAndElementGroupsAndDeleteFields(result, edgeFields: string[]) {
     result.elements.nodes.forEach(node => {
       node.group = 'nodes'
@@ -276,7 +253,19 @@ export class AppComponent implements OnInit{
     fields?.forEach(field => delete object[field])
   }
 
-  layoutToolbarChange($event: any) {
-    console.log(`app gets layout toolbar change ${JSON.stringify($event)}`)
+  bigGraphLayoutToolbarChange($event: any) {
+    console.log(`app gets big layout toolbar change ${JSON.stringify($event)}`)
+    // this.bigGraphLayoutOptions = {...this.bigGraphLayoutOptions}
+    this.bigGraph?.render()
+  }
+
+  graph2LayoutToolbarChange($event: any) {
+    console.log(`app gets graph2 layout toolbar change ${JSON.stringify($event)}`)
+    this.graph2?.render()
+  }
+
+  graph3LayoutToolbarChange($event: any) {
+    console.log(`app gets graph3 layout toolbar change ${JSON.stringify($event)}`)
+    this.graph3?.render()
   }
 }

@@ -1,27 +1,21 @@
 import {
+  AfterViewChecked,
   AfterViewInit,
   Component,
   EventEmitter,
+  HostListener,
   Input,
+  OnChanges,
   OnInit,
-  Output, ViewChild
+  Output,
+  SimpleChanges,
+  ViewChild
 } from '@angular/core'
 import { LayoutOptions } from 'cytoscape'
-import {
-  BreadthFirstLayoutOptionsImpl,
-  CircleLayoutOptionsImpl,
-  ConcentricLayoutOptionsImpl,
-  CoseLayoutOptionsImpl,
-  DagreLayoutOptionsImpl, GridLayoutOptionsImpl,
-  NullLayoutOptionsImpl,
-  PresetLayoutOptionsImpl,
-  RandomLayoutOptionsImpl
+import { BreadthFirstLayoutOptionsImpl, CircleLayoutOptionsImpl, ConcentricLayoutOptionsImpl, CoseLayoutOptionsImpl,
+  DagreLayoutOptionsImpl, GridLayoutOptionsImpl, NullLayoutOptionsImpl, PresetLayoutOptionsImpl, RandomLayoutOptionsImpl
 } from '../layout/layout-options-impl'
-
-class LayoutInfo {
-  name: string
-  layout: any
-}
+import { FieldInfo, FieldsetInfo, FormInfo } from '../fluid-form/FormInfo'
 
 @Component({
   selector: 'cytoscape-layout-tool',
@@ -32,230 +26,237 @@ class LayoutInfo {
         height: 2em;
       }
 
-      .layoutHeader {
+      .layout-header {
         width: 100%;
         height: 20px;
       }
 
-      p-fieldset > fieldset {
-        width: 400px;
+      .layout-dropdown {
+        padding-right: 10px;
+      }
+
+      .ui-button-text {
+        font-size: 18pt;
+      }
+
+      span.ui-button-text {
+        font-size: 24pt;
       }
 
       input:disabled {
         background-color: rgba(204, 204, 204, .33);
       }
-
-      p-inputSwitch {
-        padding-left: 10px;
-      }
-
-      close-button {
-        max-height: 18px;
-        height: 18px;
-        padding: 5px;
-        margin-bottom: 5px;
-      }
     `
   ],
   template: `
-    <div style="display: flex;">
-      <div class="layoutHeader">Layouts</div>
-    </div>
-    <p-dropdown
+    <div>
+      <div style="display: flex;">
+        <div class="layout-header">Layouts and Layout Options</div>
+      </div>
+      <p-dropdown class="layout-dropdown"
         name="selectedLayoutInfo"
-        [options]="layoutInfos"
-        [(ngModel)]="selectedLayoutInfo"
+        [options]="layoutOptionsList"
+        [(ngModel)]="layoutOptions"
         optionLabel="name"
       ></p-dropdown>
-    <!--
-    Something more generic would be nice...
-        <cyto-fluid-form-fieldset model="selectedLayoutInfo" [modelProperty]="'fit'"></cyto-fluid-form-fieldset>
-     -->
-    <form #layoutForm="ngForm">
-      <p-fieldset class="fieldset" legend="Fit" *ngIf="selectedLayoutHasProperty('fit')">
-        <div class="ui-g ui-fluid">
-          <div class="ui-g-12 ui-md-4">
-            <div class="ui-inputgroup">
-              <span class="ui-chkbox-label">Fit</span>
-              <p-inputSwitch [(ngModel)]="layoutOptions.fit" name="fit"
-                             pTooltip="whether to fit to viewport"
-                             [disabled]="selectedLayoutDoesntHaveOwnProperty('fit')"></p-inputSwitch>
-            </div>
-          </div>
-          <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('padding')">
-            <div class="ui-inputgroup">
-              <input type="number" pInputText placeholder="Padding"
-                     [(ngModel)]="layoutOptions.padding" name="padding"
-                     pTooltip="padding around when fit"
-                     [disabled]="selectedLayoutDoesntHaveOwnProperty('padding')"/>
-            </div>
-          </div>
-        </div>
-      </p-fieldset>
-      <p-fieldset class="fieldset" legend="Animation" *ngIf="selectedLayoutHasProperty('animate')">
-        <div class="ui-g ui-fluid" *ngIf="selectedLayoutHasProperty('zoom')">
-          <div class="ui-g-12 ui-md-4">
-            <div class="ui-inputgroup">
-              <span class="ui-inputgroup-addon"><i class="pi pi-plus-circle"></i></span>
-              <input type="number" pInputText placeholder="Zoom" [(ngModel)]="layoutOptions.zoom" name="zoom"
-                     pTooltip="the zoom level to set (likely want fit = false if set)"
-                     [disabled]="selectedLayoutDoesntHaveOwnProperty('zoom')"/>
-            </div>
-          </div>
-          <div class="ui-g-12 ui-md-4"  *ngIf="selectedLayoutHasProperty('pan')">
-            <div class="ui-inputgroup">
-              <input type="number" pInputText placeholder="Pan" [(ngModel)]="layoutOptions.pan" name="pan"
-                     pTooltip="the pan level to set (likely want fit = false if set)"
-                     [disabled]="selectedLayoutDoesntHaveOwnProperty('pan')"/>
-            </div>
-          </div>
-          <div class="ui-g-12 ui-md-4"  *ngIf="selectedLayoutHasProperty('animate')">
-            <div class="ui-inputgroup">
-              <span class="ui-chkbox-label">Animate</span>
-              <p-inputSwitch [(ngModel)]="layoutOptions.animate" name="animate"
-                             pTooltip="whether to transition the node positions"
-                             [disabled]="selectedLayoutDoesntHaveOwnProperty('animate')"></p-inputSwitch>
-            </div>
-          </div>
-          <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('animationDuration')">
-            <div class="ui-inputgroup">
-              <input type="number" pInputText placeholder="Animation Duration"
-                     [(ngModel)]="layoutOptions.animationDuration" name="animationDuration"
-                     pTooltip="duration of animation in ms if enabled"
-                     [disabled]="selectedLayoutDoesntHaveOwnProperty('animationDuration')"/>
-            </div>
-          </div>
-          <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('animationEasing')">
-            <div class="ui-inputgroup">
-              <input type="number" pInputText placeholder="Animation Easing"
-                     [(ngModel)]="layoutOptions.animationEasing" name="animationEasing"
-                     pTooltip="easing of animation if enabled"
-                     [disabled]="selectedLayoutDoesntHaveOwnProperty('animationEasing')"/>
-            </div>
-          </div>
-        </div>
-      </p-fieldset>
-      <p-fieldset class="fieldset" legend="Shaped" *ngIf="selectedLayoutHasProperty('avoidOverlap')">
-        <div class="ui-g ui-fluid" *ngIf="selectedLayoutHasProperty('avoidOverlap')">
-          <div class="ui-g-12 ui-md-4">
-            <div class="ui-inputgroup">
-              <span class="ui-chkbox-label">Avoid Overlap</span>
-              <p-inputSwitch [(ngModel)]="layoutOptions.avoidOverlap" name="avoidOverlap"
-                             pTooltip="prevents node overlap, may overflow boundingBox if not enough space"
-                             [disabled]="selectedLayoutDoesntHaveOwnProperty('avoidOverlap')"></p-inputSwitch>
-            </div>
-          </div>
-          <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('spacingFactor')">
-            <div class="ui-inputgroup">
-              <span class="ui-chkbox-label">Spacing Factor</span>
-              <p-inputSwitch [(ngModel)]="layoutOptions.spacingFactor" name="spacingFactor"
-                             pTooltip="Applies a multiplicative factor (>0) to expand or compress the overall area that the nodes take up"
-                             [disabled]="selectedLayoutDoesntHaveOwnProperty('spacingFactor')"></p-inputSwitch>
-            </div>
-          </div>
-          <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('nodeDimensionsIncludeLabels')">
-            <div class="ui-inputgroup">
-              <span class="ui-chkbox-label">Node Dimensions Include Labels</span>
-              <p-inputSwitch [(ngModel)]="layoutOptions.nodeDimensionsIncludeLabels" name="nodeDimensionsIncludeLabels"
-                             pTooltip="Excludes the label when calculating node bounding boxes for the layout algorithm"
-                             [disabled]="selectedLayoutDoesntHaveOwnProperty('nodeDimensionIncludeLabels')"></p-inputSwitch>
-            </div>
-          </div>
-        </div>
-      </p-fieldset>
-      <p-fieldset class="fieldset" legend="Directed" *ngIf="selectedLayoutHasProperty('directed')">
-        <div class="ui-g ui-fluid">
-          <div class="ui-g-12 ui-md-4">
-            <div class="ui-inputgroup">
-              <span class="ui-chkbox-label">Directed</span>
-              <p-inputSwitch [(ngModel)]="layoutOptions.directed" name="directed"
-                             pTooltip="whether the tree is directed downwards (or edges can point in any direction if false)"
-                             [disabled]="selectedLayoutDoesntHaveOwnProperty('directed')"></p-inputSwitch>
-            </div>
-          </div>
-          <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('circle')">
-            <div class="ui-inputgroup">
-              <span class="ui-chkbox-label">Circle</span>
-              <p-inputSwitch [(ngModel)]="layoutOptions.circle" name="circle"
-                             pTooltip="put depths in concentric circles if true, put depths top down if false"
-                             [disabled]="selectedLayoutDoesntHaveOwnProperty('circle')"></p-inputSwitch>
-            </div>
-          </div>
-          <div class="ui-g-12 ui-md-4"  *ngIf="selectedLayoutHasProperty('maximalAdjustments')">
-            <div class="ui-inputgroup">
-              <input type="number" pInputText placeholder="Maximal Adjustments"
-                     [(ngModel)]="layoutOptions.maximalAdjustments" name="maximalAdjustments"
-                     pTooltip="how many times to try to position the nodes in a maximal way (i.e. no backtracking)"
-                     [disabled]="selectedLayoutDoesntHaveOwnProperty('maximalAdjustments')"/>
-            </div>
-          </div>
-          <div class="ui-g-12 ui-md-4" *ngIf="selectedLayoutHasProperty('grid')">
-            <div class="ui-inputgroup">
-              <span class="ui-chkbox-label">Grid</span>
-              <p-inputSwitch [(ngModel)]="layoutOptions.grid" name="grid"
-                             pTooltip="whether to shift nodes down their natural BFS depths in order to avoid upwards edges (DAGS only)"
-                             [disabled]="selectedLayoutDoesntHaveOwnProperty('grid')"></p-inputSwitch>
-            </div>
-          </div>
-        </div>
-      </p-fieldset>
-      <p-fieldset class="fieldset" legend="Dagre" *ngIf="selectedLayoutHasProperty('nodeSep')">
-        <div class="ui-g ui-fluid" *ngIf="selectedLayoutHasProperty('nodeSep')">
-          <div class="ui-g-12 ui-md-4">
-            <div class="ui-inputgroup">
-              <input type="number" pInputText placeholder="Node Separation"
-                     [(ngModel)]="layoutOptions.nodeSep" name="nodeSep"
-                     pTooltip="the separation between adjacent nodes in the same rank"
-                     [disabled]="selectedLayoutDoesntHaveOwnProperty('nodeSep')">
-            </div>
-          </div>
-          <div class="ui-g-12 ui-md-4">
-            <div class="ui-inputgroup">
-              <input type="number" pInputText placeholder="Edge Separation"
-                     [(ngModel)]="layoutOptions.edgeSep" name="edgeSep"
-                     pTooltip="the separation between adjacent edges in the same rank"
-                     [disabled]="selectedLayoutDoesntHaveOwnProperty('edgeSep')">
-            </div>
-          </div>
-          <div class="ui-g-12 ui-md-4">
-            <div class="ui-inputgroup">
-              <input type="number" pInputText placeholder="Rank Separation"
-                     [(ngModel)]="layoutOptions.rankSep" name="rankSep"
-                     pTooltip="the separation between each rank in the layout"
-                     [disabled]="selectedLayoutDoesntHaveOwnProperty('rankSep')">
-            </div>
-          </div>
-          <div class="ui-g-12 ui-md-4">
-            <div class="ui-inputgroup">
-              <span class="ui-chkbox-label">Ranker</span>
-              <p-dropdown [options]="[{name: 'network-simplex', label:'network-simplex'},
-                                      {name: 'tight-tree', label: 'tight-tree'},
-                                      {name: 'longest-path', label: 'longest-path'}]"
-                  [(ngModel)]="layoutOptions.ranker" name="ranker"
-                  pTooltip="Type of algorithm to assign a rank to each node in the input graph."
-                  [disabled]="selectedLayoutDoesntHaveOwnProperty('ranker')"></p-dropdown>
-            </div>
-          </div>
-        </div>
-      </p-fieldset>
-    </form>
+      <button class="apply-button" pButton label="Apply" [disabled]="!changed" (click)="onApplyLayout()"></button>
+    </div>
+    <cyng-fluid-form [model]="layoutOptions" [formInfo]="formInfo" (modelChange)="onFormModelChange()"></cyng-fluid-form>
+  `})
+export class CytoscapeLayoutToolComponent implements OnInit, OnChanges, AfterViewInit, AfterViewChecked {
+  private static LAYOUT_FORM_INFO: FormInfo
 
+  @ViewChild('layoutForm') layoutForm;
+
+  _layoutOptions: any
+  changed = false
+
+  @Input()
+  get layoutOptions(): any {
+    return this._layoutOptions
+  }
+  set layoutOptions(value) {
+    console.log(`set layoutOptions: ${value?.name}`)
+    this._layoutOptions = value
+    this.layoutOptionsChange.emit(this._layoutOptions)
+  }
+  @Output() layoutOptionsChange: EventEmitter<LayoutOptions> = new EventEmitter<LayoutOptions>()
+
+  public layoutOptionsList: LayoutOptions[] = [
+    new BreadthFirstLayoutOptionsImpl(),
+    new CoseLayoutOptionsImpl(),
+    new DagreLayoutOptionsImpl(),
+    new CircleLayoutOptionsImpl(),
+    new ConcentricLayoutOptionsImpl(),
+    new GridLayoutOptionsImpl(),
+    new PresetLayoutOptionsImpl(),
+    new RandomLayoutOptionsImpl(),
+    new NullLayoutOptionsImpl(),
+  ]
+
+  formInfo: FormInfo
+
+  constructor() {
+  }
+
+  ngOnInit(): void {
+    this.formInfo = CytoscapeLayoutToolComponent.createLayoutFormInfo()
+    let layoutOptionsSelect = this.layoutOptionsList[5]
+    console.log('setting the initial selected layout, default: ', layoutOptionsSelect.name)
+    if (this.layoutOptions) {
+      console.log(`setting  the initial selected layout based on input/output layout ${JSON.stringify(this.layoutOptions)}`)
+      this.addOrReplaceInLayoutOptionsList(this.layoutOptions)
+    }
+    console.log('Initializing this.selectedLayoutInfo with layoutOptionsSelect ', JSON.stringify(layoutOptionsSelect))
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('ngOnChanges changes:', JSON.stringify(changes))
+    if (changes['layoutOptions']) {
+
+    }
+  }
+
+  ngAfterViewInit(): void {
+   // console.debug("ngAfterViewInit")
+  }
+
+  ngAfterViewChecked(): void {
+   // console.debug("ngAfterViewChecked")
+  }
+
+  onFormModelChange() {
+    console.log('onFormModelChange')
+    this.changed = true
+  }
+
+  onApplyLayout() {
+    this.changed = false
+    this.layoutOptionsChange.emit(this.layoutOptions)
+  }
+
+  private addOrReplaceInLayoutOptionsList(layoutOptions: LayoutOptions): void {
+    let matchingOptions = this.layoutOptionsList.find(selectOption => selectOption.name === layoutOptions.name)
+    if (matchingOptions) {
+      console.log('got matching layoutOptions: ', JSON.stringify(matchingOptions))
+      this.layoutOptionsList.splice(this.layoutOptionsList.indexOf(matchingOptions), 1, layoutOptions)
+    } else {
+      console.info(`Did you pass a new kind of layout?  The layout name ${name} was not found, adding a new one to the top of the list.`)
+      this.layoutOptionsList.unshift(layoutOptions)
+    }
+  }
+
+  private static createLayoutFormInfo(): FormInfo {
+    if (!CytoscapeLayoutToolComponent.LAYOUT_FORM_INFO) {
+      let fit = new FieldInfo('Fit', 'fit', 'boolean', 'Whether to fit to viewport')
+      let padding = new FieldInfo('Padding', 'padding', 'number','When fit to viewport, padding inside the viewport.')
+
+      let fitFieldset = new FieldsetInfo('Fit', [
+        fit, padding
+      ], ['fit'])
+
+      const zoom = new FieldInfo('Zoom', 'zoom', 'number','the zoom level to set (likely want fit = false if set)')
+      const pan = new FieldInfo('Pan', 'pan', 'number','the pan level to set (likely want fit = false if set)')
+      const animate = new FieldInfo('Animate', "animate", 'boolean', "whether to transition the node positions")
+      const animationDuration = new FieldInfo("Animation Duration", 'animationDuration', 'number',"duration of animation in ms if enabled")
+      const animationEasing = new FieldInfo("Animation Easing", 'animationEasing', 'number',"easing of animation if enabled")
+      let animationFieldset = new FieldsetInfo('Animation', [
+        zoom, pan, animate, animationDuration, animationEasing
+      ], ['animate'])
+
+
+      let avoidOverlap = new FieldInfo('Avoid Overlap', 'avoidOverlap', 'boolean','prevents node overlap, may overflow boundingBox if not enough space')
+      let spacingFactor = new FieldInfo('Spacing Factor', 'spacingFactor', 'number','Applies a multiplicative factor (>0) to expand or compress the overall area that the nodes take up')
+      let nodeDimensionsIncludeLabels = new FieldInfo('Node Dimensions Include Labels', 'nodeDimensionsIncludeLabels', 'boolean', 'Excludes the label when calculating node bounding boxes for the layout algorithm')
+      let shapedFieldset = new FieldsetInfo('Shaped', [
+        avoidOverlap, spacingFactor, nodeDimensionsIncludeLabels
+      ], ['avoidOverlap'])
+
+      let directed = new FieldInfo('Directed', 'breadthFirst', 'boolean', 'whether the tree is breadthFirst downwards (or edges can point in any direction if false)')
+      let circle = new FieldInfo('Circle', 'circle', 'boolean','put depths in concentric circles if true, put depths top down if false')
+      let maximalAdjustments = new FieldInfo('Maximal Adjustments', 'maximalAdjustments', 'number', 'how many times to try to position the nodes in a maximal way (i.e. no backtracking)')
+      let maximal = new FieldInfo('Maximal', 'maximal', 'boolean', 'whether to shift nodes down their natural BFS depths in order to avoid upwards edges (DAGS only)')
+      let grid = new FieldInfo('Grid', 'grid', 'boolean', 'whether to shift nodes down their natural BFS depths in order to avoid upwards edges (DAGS only)')
+      let roots = new FieldInfo('Roots', 'roots', 'string', 'the roots of the trees')
+      let breadthFirstFieldset = new FieldsetInfo('Breadth First', [
+        directed, circle, maximalAdjustments, maximal, grid, roots
+      ], ['breadthFirst'])
+
+      let nodeSep = new FieldInfo('Node Separation', 'nodeSep', 'number', 'the separation between adjacent nodes in the same rank')
+      let edgeSep = new FieldInfo('Edge Separation', 'edgeSep', 'number', 'the separation between adjacent edges in the same rank')
+      let rankSep = new FieldInfo('Rank Separation', 'rankSep', 'number', 'the separation between each rank in the layout')
+      let ranker = new FieldInfo('Ranker', 'ranker', 'options', 'Type of algorithm to assign a rank to each node in the input graph.')
+      ranker.options = [{name: 'network-simplex', label: 'network-simplex'},
+        {name: 'tight-tree', label: 'tight-tree'},
+        {name: 'longest-path', label: 'longest-path'}]
+
+      let dagreFieldset = new FieldsetInfo('Dagre', [
+        nodeSep, edgeSep, rankSep, ranker
+      ], ['nodeSep'])
+
+      let animationThreshold = new FieldInfo('Animation Threshold', 'animationThreshold', 'number', 'The layout animates only after this many milliseconds when animate is true (prevents flashing on fast runs)')
+      let refresh = new FieldInfo('Refresh', 'refresh', 'number',
+        'Number of iterations between consecutive screen positions update')
+      let randomize = new FieldInfo('Randomize', 'randomize', 'boolean', 'Randomize the initial positions of the nodes (true) or use existing positions (false)')
+      let componentSpacing = new FieldInfo('Component Spacing', 'componentSpacing', 'number', 'Extra spacing between components in non-compound graphs')
+      let nodeOverlap = new FieldInfo('Node Overlap', 'nodeOverlap', 'number', 'Node repulsion (overlapping) multiplier')
+      let nestingFactor = new FieldInfo('Nesting Factor', 'nestingFactor', 'number', 'Nesting factor (multiplier) to compute ideal edge length for nested edges')
+      let gravity = new FieldInfo('Gravity', 'gravity', 'number', 'Gravity force (constant)')
+      let numIter = new FieldInfo('Max Iterations', 'numIter', 'number', 'Maximum number of iterations to perform')
+      let initialTemp = new FieldInfo('Initial Temp', 'initialTemp', 'number', 'Initial temperature (maximum node displacement)')
+      let coolingFactor = new FieldInfo('Cooling Factor', 'coolingFactor', 'number', 'Cooling factor (how the temperature is reduced between consecutive iterations')
+      let minTemp = new FieldInfo('Min. Temp', 'minTemp', 'number', 'Lower temperature threshold (below this point the layout will end)')
+      let coseFieldset = new FieldsetInfo('COSE', [
+        animationThreshold, refresh, randomize, componentSpacing, nodeOverlap, nestingFactor, gravity, numIter,
+        initialTemp, coolingFactor, minTemp
+      ], ['coolingFactor'])
+
+      let avoidOverlapPadding = new FieldInfo('avoidOverlapPadding', 'avoidOverlapPadding', 'number', 'extra spacing around nodes when avoidOverlap: true')
+      let condense = new FieldInfo('condense', 'condense', 'boolean', 'uses all available space on false, uses minimal space on true')
+      let rows = new FieldInfo('Rows', 'rows', 'number', 'force num of rows in the grid')
+      let cols = new FieldInfo('Columns', 'cols', 'number', 'force num of columns in the grid')
+
+      let gridFieldset = new FieldsetInfo('Grid', [
+        avoidOverlapPadding, condense, rows, cols
+      ], ['cols'])
+
+      let radius = new FieldInfo('Radius', 'radius', 'number', 'the radius of the circle')
+      let startAngle = new FieldInfo('Start Angle', 'startAngle', 'number', 'where nodes start in radians (default:3 / 2 * Math.PI)')
+      let sweep = new FieldInfo('Sweep', 'sweep', 'number', 'how many radians should be between the first and last node (defaults to full circle)')
+      let clockwise = new FieldInfo('Clockwise', 'clockwise', 'number', 'whether the layout should go clockwise (true) or counterclockwise/anticlockwise (false)')
+      let circularFieldSet = new FieldsetInfo('Circular', [
+        radius, startAngle, sweep, clockwise
+      ], ['clockwise'])
+
+      let equidistant = new FieldInfo('Equidistant', 'equidistant', 'boolean', 'whether levels have an equal radial distance betwen them, may cause bounding box overflow')
+      let minNodeSpacing = new FieldInfo('Min. Node Spacing', 'minNodeSpacing', 'number', 'min spacing between outside of nodes (used for radius adjustment)')
+      let height = new FieldInfo('Height', 'height', 'number', '')
+      let width = new FieldInfo('Width', 'width', 'number', '')
+      let concentricFieldSet = new FieldsetInfo('Concentric', [
+        equidistant, minNodeSpacing, startAngle, height, width
+      ], ['equidistant'])
+
+      //boundingBox: undefined // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+
+      CytoscapeLayoutToolComponent.LAYOUT_FORM_INFO = new FormInfo('Layout',
+        [
+          breadthFirstFieldset, coseFieldset, dagreFieldset, gridFieldset, circularFieldSet, concentricFieldSet,
+          fitFieldset, animationFieldset, shapedFieldset ],
+        false)
+    }
+    return CytoscapeLayoutToolComponent .LAYOUT_FORM_INFO
+  }
+}
+/*
     <!--
 
       Dagre
-        // TB for top to bottom flow, 'LR' for left to right
-        rankDir = 'TB'
         // Type of algorithm to assign a rank to each node in the input graph.
         // Possible values:
         c = undefined
         // number of ranks to keep between the source and target of the edge
         minLen = ( edge ) => { return 1 }
         edgeWeight = ( edge ) => { return 1 } // higher weight edges are generally made shorter and straighter than lower weight edges
-
-
-    BReadthFirst
-          // the roots of the trees
-          roots?: string
 
     AnimateLayoutOptionsImpl
       // a function that determines whether the node should be animated.
@@ -277,42 +278,18 @@ class LayoutInfo {
         transform = (node, position ) => position
 
       //Grid
-        // extra spacing around nodes when avoidOverlap: true
-        avoidOverlapPadding = 10
-        // uses all available space on false, uses minimal space on true
-        condense = false
-        // force num of rows in the grid
-        rows?: number | undefined = undefined
-        // force num of columns in the grid
-        cols?: number | undefined = undefined
         // returns { row, col } for element
         // (node: NodeSingular) => return { row: number; col: number; }
         position = undefined
 
       //Random
-        fit = true
-        padding = 20
         // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
         boundingBox: cytoscape.BoundingBox12 | cytoscape.BoundingBoxWH | undefined = undefined
         // transform a given node position. Useful for changing flow direction in discrete layouts
         transform = (node, position ) => position
 
       //Circular
-        radius: number // the radius of the circle
-        startAngle: number = 3 / 2 * Math.PI // where nodes start in radians
-        sweep: number = undefined // how many radians should be between the first and last node (defaults to full circle)
-        clockwise: true // whether the layout should go clockwise (true) or counterclockwise/anticlockwise (false)
-
       //Conecntric
-        equidistant: false // whether levels have an equal radial distance betwen them, may cause bounding box overflow
-        minNodeSpacing: 10 // min spacing between outside of nodes (used for radius adjustment)
-        boundingBox: undefined // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
-        startAngle: number = 3 / 2 * Math.PI
-        height = undefined
-        width = undefined
-        // Applies a multiplicative factor (>0) to expand or compress the overall area that the nodes take up
-        spacingFactor: undefined
-
         concentric(node: { degree(): number }): number {
           eturn 0
         }
@@ -322,51 +299,8 @@ class LayoutInfo {
         }
 
         Breadth First
-          // whether the tree is directed downwards (or edges can point in any direction if false)
-          directed = false
-          // put depths in concentric circles if true, put depths top down if false
-          circle = false
-          // the roots of the trees
-          roots?: string
-          // how many times to try to position the nodes in a maximal way (i.e. no backtracking)
-          maximalAdjustments: number
-          // whether to shift nodes down their natural BFS depths in order to avoid upwards edges (DAGS only)
-          maximal = false
-          grid = false // whether to create an even grid into which the DAG is placed (circle:false only)
-          nodeDimensionsIncludeLabels: false // Excludes the label when calculating node bounding boxes for the layout algorithm
 
          CoseLayoutOptionsImpl
-          animationThreshold: 250
-
-          // Number of iterations between consecutive screen positions update
-          refresh = 20
-
-          // Randomize the initial positions of the nodes (true) or use existing positions (false)
-          randomize = false
-
-          // Extra spacing between components in non-compound graphs
-          componentSpacing = 40
-
-          // Node repulsion (overlapping) multiplier
-          nodeOverlap = 4
-
-          // Nesting factor (multiplier) to compute ideal edge length for nested edges
-          nestingFactor = 1.2
-
-          // Gravity force (constant)
-          gravity = 1
-
-          // Maximum number of iterations to perform
-          numIter = 1000
-
-          // Initial temperature (maximum node displacement)
-          initialTemp = 1000
-
-          // Cooling factor (how the temperature is reduced between consecutive iterations
-          coolingFactor = 0.99
-
-          // Lower temperature threshold (below this point the layout will end)
-          minTemp = 1.0
 
           // Node repulsion (non overlapping) multiplier
           nodeRepulsion =  function( node ){ return 2048 }
@@ -378,126 +312,4 @@ class LayoutInfo {
           edgeElasticity = ( edge ) => 32
 
     -->
-  `})
-export class CytoscapeLayoutToolComponent implements OnInit, AfterViewInit {
-  @ViewChild('layoutForm') layoutForm;
-
-  public layoutInfos: LayoutInfo[] = [
-    {name: 'random', layout: new RandomLayoutOptionsImpl()},
-    {name: 'dagre', layout: new DagreLayoutOptionsImpl()},
-    {name: 'null', layout: new NullLayoutOptionsImpl()},
-    {name: 'circle', layout: new CircleLayoutOptionsImpl()},
-    {name: 'concentric', layout: new ConcentricLayoutOptionsImpl()},
-    {name: 'grid', layout: new GridLayoutOptionsImpl()},
-    {name: 'preset', layout: new PresetLayoutOptionsImpl()},
-    {name: 'breadthfirst', layout: new BreadthFirstLayoutOptionsImpl()},
-    {name: 'cose', layout: new CoseLayoutOptionsImpl()}
-    ]
-
-  _layoutOptions: any
-  @Input()
-  get layoutOptions(): any {
-    return this._layoutOptions
-  }
-  set layoutOptions(value) {
-    console.log(`set layoutOptions: ${JSON.stringify(value)}`)
-    this._layoutOptions = value
-    console.log(`emitting new layout: ${JSON.stringify(this._layoutOptions)}`)
-    this.layoutOptionsChange.emit(this._layoutOptions)
-  }
-
-  _selectedLayoutInfo: any
-  get selectedLayoutInfo(): any {
-    return this._selectedLayoutInfo
-  }
-  set selectedLayoutInfo(value: any) {
-    console.log(`updating this._selectedLayoutInfo from selected layout info ${JSON.stringify(value)}`)
-    this._selectedLayoutInfo = value
-    this.layoutOptions = value.layout
-  }
-
-  @Output() layoutOptionsChange: EventEmitter<LayoutOptions> = new EventEmitter<LayoutOptions>()
-
-  constructor() {
-  }
-
-  ngOnInit(): void {
-    let layoutInfoToSet = this.layoutInfos[5]
-    console.log('setting the initial selected layout, default: ', layoutInfoToSet.name)
-    if (this.layoutOptions) {
-      console.log(`setting  the initial selected layout based on input/output layout ${JSON.stringify(this.layoutOptions)}`)
-      layoutInfoToSet = this.createOrUpdateLayoutInfo(this.layoutOptions.name, this.layoutOptions)
-    }
-    console.log('Initializing this.selectedLayoutInfo with layoutInfoToSet ', JSON.stringify(layoutInfoToSet))
-    this.selectedLayoutInfo = layoutInfoToSet
-  }
-
-  ngAfterViewInit() {
-    this.layoutForm.form.valueChanges.subscribe(change => {
-      console.log(`form change: ${JSON.stringify(change)}
-                      \nwith form: , ${JSON.stringify(this.selectedLayoutInfo)}
-                      \nand layoutOptions ${JSON.stringify(this.layoutOptions)}`)
-      // We don't care about the layout itself changing.
-      console.log(`Form changed selected name: ${this.selectedLayoutInfo.name}, output name: ${this.layoutOptions.name}`)
-      if (this.selectedLayoutInfo.name !== this.layoutOptions.name) {
-        console.log(`Form changed to ${this.selectedLayoutInfo.name} from ${this.layoutOptions.name}`)
-        // return
-      }
-      const newLayoutOptions = {...this.selectedLayoutInfo, ...change }
-      console.log('setting new layoutOptions:', JSON.stringify(newLayoutOptions))
-      this.layoutOptions = newLayoutOptions
-    })
-  }
-
-  private createOrUpdateLayoutInfo(name: string, layoutOptions: LayoutOptions): any {
-    let matchingInfo = this.getLayoutInfoForName(name)
-    if (matchingInfo) {
-      console.log('Got matching info ', JSON.stringify(matchingInfo))
-      matchingInfo.layout = { ...layoutOptions}
-      console.log('new matching info: ', JSON.stringify(matchingInfo))
-    } else {
-      console.warn(`Did you pass a new kind of layout?  The layout name ${name} was not found, adding a new one to the list`)
-      matchingInfo = { name: name, layout: layoutOptions }
-      this.layoutInfos.push(matchingInfo)
-    }
-    return matchingInfo
-  }
-
-  private getLayoutInfoForName(name: string): LayoutInfo {
-    return this.layoutInfos.find(info => info.name === name)
-  }
-
-  // layoutInfoChanged($event: any) {
-  //   console.log(`layoutInfoChanged ${JSON.stringify($event.value)}`)
-  //   const chosenInfo = this.createOrUpdateLayoutInfo($event.value.name)
-  //   if (!chosenInfo) {
-  //     console.warn(`Could not find layout info for name ${$event.value.name}`)
-  //   } else {
-  //     this.layoutOptions = chosenInfo.layout
-  //   }
-  // }
-
-  selectedLayoutHasProperty(field: string): boolean {
-    if (!this.selectedLayoutInfo) {
-      return false //not sure why this happens ever
-    }
-    // if (field === 'fit') {
-    //   console.log(`this._layoutOptions: ${JSON.stringify(this.selectedLayoutInfo)}`)
-    // }
-    // tslint:disable-next-line:forin
-    for (const prop in this.selectedLayoutInfo.layout) {
-      // console.log(`prop: ${prop}`)
-      if (prop === field) {
-        // console.log(`selected layout has ${field}`)
-        return true
-      }
-    }
-    // console.log(`selected layout has no ${field}`)
-    return false
-  }
-
-  selectedLayoutDoesntHaveOwnProperty(field: string) {
-    return !this.selectedLayoutHasProperty(field)
-  }
-
-}
+ */

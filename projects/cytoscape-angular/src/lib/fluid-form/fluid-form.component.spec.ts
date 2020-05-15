@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FluidFormFieldsetComponent } from './fluid-form-fieldset.component';
+import { FluidFormComponent } from './fluid-form.component';
 
 describe('FluidFormFieldsetComponent', () => {
-  let component: FluidFormFieldsetComponent;
-  let fixture: ComponentFixture<FluidFormFieldsetComponent>;
+  let component: FluidFormComponent;
+  let fixture: ComponentFixture<FluidFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FluidFormFieldsetComponent ]
+      declarations: [ FluidFormComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FluidFormFieldsetComponent);
+    fixture = TestBed.createComponent(FluidFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

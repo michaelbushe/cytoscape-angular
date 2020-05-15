@@ -25,9 +25,9 @@ export class NullLayoutOptionsImpl extends BaseLayoutOptionsImpl {
 export class AnimateLayoutOptionsImpl  extends BaseLayoutOptionsImpl implements AnimatedLayoutOptions  {
 
   // the zoom level to set (prob want fit = false if set)
-  zoom: number =  undefined
+  zoom: number =  null
   // the pan level to set (prob want fit = false if set)
-  pan: number =  undefined
+  pan: number =  null
   // whether to transition the node positions
   animate = false
   // duration of animation in ms if enabled
@@ -47,7 +47,7 @@ export class PresetLayoutOptionsImpl  extends AnimateLayoutOptionsImpl {
   padding?: number
 
   // map of (node id) => (position obj); or function(node){ return somPos; }
-  positions: undefined
+  positions: null
   // transform a given node position. Useful for changing flow direction in discrete layouts
   transform = (node, position ) => position
 }
@@ -59,7 +59,7 @@ export class ShapedLayoutOptionsImpl extends AnimateLayoutOptionsImpl {
   // fit padding
   padding = 30
   // constrain layout bounds
-  boundingBox?: BoundingBox12 | BoundingBoxWH | undefined = undefined
+  boundingBox?: BoundingBox12 | BoundingBoxWH | undefined = null
 
   // prevents node overlap, may overflow boundingBox if not enough space
   avoidOverlap = true
@@ -70,7 +70,7 @@ export class ShapedLayoutOptionsImpl extends AnimateLayoutOptionsImpl {
   spacingFactor = 1.75
 
   // a sorting function to order the nodes; e.g. function(a, b){ return a.data('weight') - b.data('weight') }
-  sort?: SortingFunction = undefined
+  sort?: SortingFunction = null
   // transform a given node position. Useful for changing flow direction in discrete layouts
   transform = (node, position ) => position
 }
@@ -84,12 +84,12 @@ export class GridLayoutOptionsImpl  extends ShapedLayoutOptionsImpl {
   // uses all available space on false, uses minimal space on true
   condense = false
   // force num of rows in the grid
-  rows?: number | undefined = undefined
+  rows?: number | undefined = null
   // force num of columns in the grid
-  cols?: number | undefined = undefined
+  cols?: number | undefined = null
   // returns { row, col } for element
   // (node: NodeSingular) => return { row: number; col: number; }
-  position = undefined
+  position = null
 }
 
 export class RandomLayoutOptionsImpl extends AnimateLayoutOptionsImpl {
@@ -98,7 +98,7 @@ export class RandomLayoutOptionsImpl extends AnimateLayoutOptionsImpl {
   fit = true
   padding = 20
   // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
-  boundingBox: cytoscape.BoundingBox12 | cytoscape.BoundingBoxWH | undefined = undefined
+  boundingBox: cytoscape.BoundingBox12 | cytoscape.BoundingBoxWH | undefined = null
   // transform a given node position. Useful for changing flow direction in discrete layouts
   transform = (node, position ) => position
 }
@@ -108,7 +108,7 @@ export class CircleLayoutOptionsImpl extends ShapedLayoutOptionsImpl {
 
   radius: number // the radius of the circle
   startAngle: number = 3 / 2 * Math.PI // where nodes start in radians
-  sweep: number = undefined // how many radians should be between the first and last node (defaults to full circle)
+  sweep: number = null // how many radians should be between the first and last node (defaults to full circle)
   clockwise: true // whether the layout should go clockwise (true) or counterclockwise/anticlockwise (false)
 }
 
@@ -125,13 +125,13 @@ export class ConcentricLayoutOptionsImpl {
   nodeDimensionsIncludeLabels: true
   equidistant: false // whether levels have an equal radial distance betwen them, may cause bounding box overflow
   minNodeSpacing: 10 // min spacing between outside of nodes (used for radius adjustment)
-  boundingBox: undefined // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+  boundingBox: null // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
   // height of layout area (overrides container height)
-  height = undefined
+  height = null
   // width of layout area (overrides container width)
-  width = undefined
+  width = null
   // Applies a multiplicative factor (>0) to expand or compress the overall area that the nodes take up
-  spacingFactor: undefined
+  spacingFactor: null
 
   concentric(node: { degree(): number }): number {
     return 0
@@ -210,16 +210,20 @@ type RankDir = 'LR' | 'TB'
 type Ranker = 'network-simplex' | 'tight-tree' | 'longest-path'
 
 export class DagreLayoutOptionsImpl extends ShapedLayoutOptionsImpl {
+  constructor() {
+    super();
+  }
+
   name= 'dagre'
 
-  nodeSep: number = undefined // the separation between adjacent nodes in the same rank
-  edgeSep: number = undefined // the separation between adjacent edges in the same rank
-  rankSep: number = undefined // the separation between each rank in the layout
+  nodeSep: number = null // the separation between adjacent nodes in the same rank
+  edgeSep: number = null // the separation between adjacent edges in the same rank
+  rankSep: number = null // the separation between each rank in the layout
   // TB for top to bottom flow, 'LR' for left to right
-  rankDir = 'TB'
+  rankDir: RankDir = 'TB'
   // Type of algorithm to assign a rank to each node in the input graph.
   // Possible values: 'network-simplex', 'tight-tree' or 'longest-path'
-  ranker = undefined
+  ranker: Ranker = null
   // number of ranks to keep between the source and target of the edge
   minLen = ( edge ) => { return 1 }
   edgeWeight = ( edge ) => { return 1 } // higher weight edges are generally made shorter and straighter than lower weight edges
