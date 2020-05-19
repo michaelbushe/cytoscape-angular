@@ -17,7 +17,6 @@
     ],
     "paths": {
       "cytoscape-angular": [
-        "dist/cytoscape-angular/cytoscape-angular",
         "dist/cytoscape-angular"
       ]
     }

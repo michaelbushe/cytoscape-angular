@@ -35,14 +35,6 @@ import { FieldInfo, FieldsetInfo, FormInfo } from '../fluid-form/FormInfo'
         padding-right: 10px;
       }
 
-      .ui-button-text {
-        font-size: 18pt;
-      }
-
-      span.ui-button-text {
-        font-size: 24pt;
-      }
-
       input:disabled {
         background-color: rgba(204, 204, 204, .33);
       }
@@ -51,7 +43,7 @@ import { FieldInfo, FieldsetInfo, FormInfo } from '../fluid-form/FormInfo'
   template: `
     <div>
       <div style="display: flex;">
-        <div class="layout-header">Layouts and Layout Options</div>
+        <div class="layout-header">Edit Layout</div>
       </div>
       <p-dropdown class="layout-dropdown"
         name="selectedLayoutInfo"
@@ -78,7 +70,6 @@ export class CytoscapeLayoutToolComponent implements OnInit, OnChanges, AfterVie
   set layoutOptions(value) {
     console.log(`set layoutOptions: ${value?.name}`)
     this._layoutOptions = value
-    this.layoutOptionsChange.emit(this._layoutOptions)
   }
   @Output() layoutOptionsChange: EventEmitter<LayoutOptions> = new EventEmitter<LayoutOptions>()
 
@@ -111,7 +102,7 @@ export class CytoscapeLayoutToolComponent implements OnInit, OnChanges, AfterVie
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('ngOnChanges changes:', JSON.stringify(changes))
+    console.log('ngOnChanges layout changes:', JSON.stringify(changes))
     if (changes['layoutOptions']) {
 
     }
@@ -186,7 +177,9 @@ export class CytoscapeLayoutToolComponent implements OnInit, OnChanges, AfterVie
       let edgeSep = new FieldInfo('Edge Separation', 'edgeSep', 'number', 'the separation between adjacent edges in the same rank')
       let rankSep = new FieldInfo('Rank Separation', 'rankSep', 'number', 'the separation between each rank in the layout')
       let ranker = new FieldInfo('Ranker', 'ranker', 'options', 'Type of algorithm to assign a rank to each node in the input graph.')
-      ranker.options = [{name: 'network-simplex', label: 'network-simplex'},
+      ranker.options = [
+        {name: '', label: ''},
+        {name: 'network-simplex', label: 'network-simplex'},
         {name: 'tight-tree', label: 'tight-tree'},
         {name: 'longest-path', label: 'longest-path'}]
 

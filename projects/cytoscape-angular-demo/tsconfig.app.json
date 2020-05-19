@@ -10,5 +10,10 @@
   ],
   "include": [
     "src/**/*.d.ts"
-  ]
+  ],
+  "paths": {
+    "cytoscape-angular": [
+      "dist/cytoscape-angular"
+    ]
+  }
 }

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CytoscapeGraphComponent } from './cytoscape-graph.component'
 import { CytoscapeGraphToolbarComponent } from './cytoscape-graph-toolbar/cytoscape-graph-toolbar.component'
 import {
+  AutoCompleteModule,
   ButtonModule,
   DropdownModule,
   FieldsetModule,
@@ -37,6 +38,7 @@ import { FluidFormComponent } from './fluid-form/fluid-form.component'
     ProgressSpinnerModule,
     TooltipModule,
     SpinnerModule,
+    AutoCompleteModule
   ],
   exports: [
     CytoscapeGraphComponent,

@@ -1,6 +1,15 @@
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core'
-import { CytoscapeOptions, EdgeDefinition, LayoutOptions, NodeDefinition, Position, SelectionType, Stylesheet } from 'cytoscape'
 import * as cy from 'cytoscape'
+import {
+  CytoscapeOptions,
+  EdgeDefinition,
+  LayoutOptions,
+  NodeDefinition,
+  Position,
+  SelectionType,
+  Stylesheet
+} from 'cytoscape'
+
 declare var cytoscape: any
 
 /**
@@ -13,11 +22,18 @@ declare var cytoscape: any
 @Component({
   selector: 'cytoscape-graph',
   template: `
-    <p-progressSpinner *ngIf="loading" [style]="{width: '100px', height: '100px'}" strokeWidth="8" fill="#EEEEEE" animationDuration=".5s"></p-progressSpinner>
+    <p-progressSpinner *ngIf="loading" class="spinner" strokeWidth="4" fill="#EEEEEE" animationDuration=".5s"></p-progressSpinner>
     <div #cyGraph class="graphWrapper">
     </div>
   `,
   styles: [`
+    .spinner {
+      position: absolute;
+      left: '50%';
+      z-index: 10;
+      width: '250px';
+      height: '250px';
+    }
     @keyframes ui-progress-spinner-color {
       100%,
       0% {
@@ -85,7 +101,7 @@ export class CytoscapeGraphComponent implements OnChanges, AfterViewInit {
   @Input()
   selectionType: SelectionType
   @Input()
-  style: Stylesheet
+  style: Stylesheet[]
   @Input()
   styleEnabled: boolean
   @Input()
@@ -109,13 +125,16 @@ export class CytoscapeGraphComponent implements OnChanges, AfterViewInit {
   private cy: cy.Core
   loading: boolean = false
 
-  constructor(private el: ElementRef) {
+  constructor() {
   }
 
   public ngOnChanges(changes: SimpleChanges): any {
-    console.log('cytoscape graph component ngOnChanges.')
+    console.log('cytoscape graph component ngOnChanges. changes:', JSON.stringify(changes))
     this.loading = true
     setTimeout(()=> {
+      if (changes["style"]) {
+        console.log('changes["style"]:', JSON.stringify(changes["style"]))
+      }
       this.render()
       setTimeout(() => {
         this.loading = false
@@ -123,11 +142,28 @@ export class CytoscapeGraphComponent implements OnChanges, AfterViewInit {
     }, 0)
   }
 
-
   ngAfterViewInit(): void {
     this.render()
   }
 
+  public centerElements(selector) {
+    if (!this.cy) {
+      return
+    }
+    const elems = this.cy.$(selector)
+    this.cy.center(elems)
+  }
+
+  public zoomToElement(selector: string, level = 3) {
+    let position = this.cy?.$(selector)?.position()
+    if (!position) {
+      console.warn(`Cannot zoom to ${selector}`)
+    }
+    this.cy.zoom({
+      level: level,
+      position: position
+    });
+  }
 
   public render() {
     if (!this.cyGraph) {
@@ -185,7 +221,7 @@ export class CytoscapeGraphComponent implements OnChanges, AfterViewInit {
 background-color : The colour of the node’s body.
 background-blacken : Blackens the node’s body for values from 0 to 1; whitens the node’s body for values from 0 to -1.
 background-opacity : The opacity level of the node’s background colour.
-background-fill : The filling style of the node’s body; may be solid (default), linear-gradient, or radial-gradient.
+background-fill : The filling bigGraphStylesJSON of the node’s body; may be solid (default), linear-gradient, or radial-gradient.
 Gradient:
 
 background-gradient-stop-colors : The colours of the background gradient stops (e.g. cyan magenta yellow).
@@ -202,7 +238,7 @@ to-top-left
 Border:
 
 border-width : The size of the node’s border.
-border-style : The style of the node’s border; may be solid, dotted, dashed, or double.
+border-bigGraphStylesJSON : The bigGraphStylesJSON of the node’s border; may be solid, dotted, dashed, or double.
 border-color : The colour of the node’s border.
 border-opacity : The opacity of the node’s border.
 

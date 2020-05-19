@@ -7,9 +7,9 @@ import { FormInfo } from './FormInfo'
 @Component({
   selector: 'cyng-fluid-form',
   template: `
-    <form [formGroup]="formGroup" [title]="formInfo.title" (ngSubmit)="onSubmit()">
-      <ng-container *ngFor="let fieldSetInfo of formInfo.fieldsets" >
-        <p-fieldset *ngIf="fieldSetInfo.hasFieldsFor(model)" class="fieldset" legend="{{fieldSetInfo.legend}}">
+    <form [formGroup]="formGroup" [title]="formInfo?.title" (ngSubmit)="onSubmit()">
+      <ng-container *ngFor="let fieldSetInfo of formInfo?.fieldsets">
+        <p-fieldset *ngIf="fieldSetInfo.showFieldsetForModel(model)" class="fieldset" legend="{{fieldSetInfo.legend}}">
           <div class="ui-g ui-fluid">
             <div class="ui-g-12 ui-md-4 field" *ngFor="let fieldInfo of fieldSetInfo.fieldInfos">
               <div class="ui-inputgroup">
@@ -24,7 +24,8 @@ import { FormInfo } from './FormInfo'
                   >
                   </p-inputSwitch>
                 </ng-container>
-                <ng-container *ngIf="fieldInfo.fieldType(model) === 'string' || fieldInfo.fieldType(model) === 'number'">
+                <ng-container
+                  *ngIf="fieldInfo.fieldType(model) === 'string' || fieldInfo.fieldType(model) === 'number'">
                   <span class="ui-float-label">
                     <input pInputText
                            id="{{fieldInfo.modelProperty}}"
@@ -38,14 +39,16 @@ import { FormInfo } from './FormInfo'
                   </span>
                 </ng-container>
                 <ng-container *ngIf="fieldInfo.fieldType(model) === 'options'">
-                  <span class="ui-dropdown-label">{{fieldInfo.label}}</span>
-                  <p-dropdown
-                    formControlName="{{fieldInfo.modelProperty}}"
-                    [name]="fieldInfo.modelProperty"
-                    [options]="fieldInfo.options"
-                    [optionLabel]="fieldInfo.optionArrayLabelField"
-                    [pTooltip]="fieldInfo.tooltip"
-                  ></p-dropdown>
+                  <span class="ui-float-label">
+                    <p-dropdown
+                      formControlName="{{fieldInfo.modelProperty}}"
+                      [name]="fieldInfo.modelProperty"
+                      [options]="fieldInfo.options"
+                      [optionLabel]="fieldInfo.optionArrayLabelField"
+                      [pTooltip]="fieldInfo.tooltip"
+                    ></p-dropdown>
+                    <label for="{{fieldInfo.modelProperty}}">{{fieldInfo.label}}</label>
+                  </span>
                 </ng-container>
               </div>
             </div>
@@ -92,7 +95,7 @@ export class FluidFormComponent implements OnInit, OnChanges, AfterViewInit, Aft
   }
 
   ngOnInit(): void {
-    console.log('FluidFormComponent this.formInfo:', JSON.stringify(this.formInfo))
+    console.debug('FluidFormComponent this.formInfo:', JSON.stringify(this.formInfo))
     let controls = {}
     this.formInfo.fieldsets.forEach(fieldsetInfo => {
       fieldsetInfo.fieldInfos.forEach(fieldInfo => {
@@ -105,8 +108,7 @@ export class FluidFormComponent implements OnInit, OnChanges, AfterViewInit, Aft
         formControl.valueChanges.subscribe( (change) => {
           console.debug('form control change ', JSON.stringify(change), ' for prop ', fieldInfo.modelProperty,
             ', changing current model value ', this.model[fieldInfo.modelProperty], ' to ', change)
-          this.model[fieldInfo.modelProperty] = change
-          this.modelChange.emit({property: fieldInfo.modelProperty, value: change})
+          fieldInfo.setValue(change, this.model, this.modelChange)
         })
         controls[fieldInfo.modelProperty] = formControl
       })
@@ -115,13 +117,13 @@ export class FluidFormComponent implements OnInit, OnChanges, AfterViewInit, Aft
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('ngOnChanges changes:', JSON.stringify(changes))
+    console.debug('ngOnChanges fluid-form changes:', JSON.stringify(changes))
     if (changes['model']) {
       const model = changes['model'].currentValue
       for (let key of Object.keys(model)) {
-        console.log('ngOnChanges model key copying:', key)
+        console.debug('ngOnChanges model key copying to form:', key)
         const control = this.formGroup?.controls[key]
-        control ? control.setValue(model[key]) : console.warn('no control for model key ', key)
+        control ? control.setValue(model[key], { emitEvent: false }) : console.warn('no control for model key ', key)
       }
     }
   }

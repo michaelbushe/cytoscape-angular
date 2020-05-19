@@ -1,8 +1,14 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core'
-import { EdgeDefinition, NodeDefinition } from 'cytoscape'
+import { EdgeDefinition, NodeDefinition, Stylesheet } from 'cytoscape'
 import dagre from 'cytoscape-dagre'
 import { CyNodeService } from './cy-node.service'
-import { CytoscapeGraphComponent, DagreLayoutOptionsImpl, PresetLayoutOptionsImpl } from 'cytoscape-angular'
+import {
+  CoseLayoutOptionsImpl,
+  CytoscapeGraphComponent,
+  DagreLayoutOptionsImpl,
+  PresetLayoutOptionsImpl
+} from 'cytoscape-angular'
+import { StylesheetImpl } from '../../../cytoscape-angular/src/lib/style/style'
 
 declare var cytoscape: any
 
@@ -45,8 +51,11 @@ declare var cytoscape: any
 
       </cytoscape-graph>
       <cytoscape-graph-toolbar [(layoutOptions)]="bigGraphLayoutOptions"
+                               [(styles)]="bigGraphStylesheet"
                                [showToolbarButtons]="true"
                                (layoutOptionsChange)="bigGraphLayoutToolbarChange($event)"
+                               (stylesChange)="bigGraphLayoutStylesToolbarChange($event)"
+                               (styleSelectorChange)="bigGraphLayoutStylesSelectorChange($event)"
                                [nodes]="bigGraphNodes"
                                [edges]="bigGraphEdges"
                                direction="column"
@@ -63,12 +72,12 @@ declare var cytoscape: any
                      showToolbar="true"
                      [nodes]="graph2Nodes"
                      [edges]="graph2Edges"
-                     [style]="style"
+                     [style]="graph2Stylesheet"
                      [layoutOptions]="graph2LayoutOptions">
-
     </cytoscape-graph>
     <h4>Graph 3 (Layout: {{graph3LayoutOptions.name}})</h4>
     <cytoscape-graph-toolbar [(layoutOptions)]="graph3LayoutOptions"
+                             [styles]="graph3Stylesheet"
                              [showToolbarButtons]="true"
                              (layoutOptionsChange)="graph3LayoutToolbarChange($event)">
     </cytoscape-graph-toolbar>
@@ -78,6 +87,7 @@ declare var cytoscape: any
                      showToolbar="true"
                      [nodes]="graph3Nodes"
                      [edges]="graph3Edges"
+                     [style]="graph3Stylesheet"
                      [layoutOptions]="graph3LayoutOptions">
     </cytoscape-graph>
   `,
@@ -107,9 +117,13 @@ declare var cytoscape: any
 export class AppComponent implements OnInit{
   @ViewChild('biggraph')
   bigGraph: CytoscapeGraphComponent
+  @ViewChild('graph2')
+  graph2: CytoscapeGraphComponent
+  @ViewChild('graph3')
+  graph3: CytoscapeGraphComponent
 
   title = 'cytoscape-angular-demo';
-  bigGraphLayoutOptions = new DagreLayoutOptionsImpl()
+  bigGraphLayoutOptions = new CoseLayoutOptionsImpl()
   bigGraphNodes: NodeDefinition[] = []
   bigGraphEdges: EdgeDefinition[] = []
   graph2LayoutOptions = new PresetLayoutOptionsImpl()
@@ -119,34 +133,9 @@ export class AppComponent implements OnInit{
   graph3Nodes: NodeDefinition[] = []
   graph3Edges: EdgeDefinition[] = []
 
-  bigGraphStylesheet: any
-  style = [{
-      selector: 'node',
-      style: {
-        width: 'label',
-        height: 'label',
-        padding: '1px',
-        label: 'data(label)',
-        color: 'black', //text color
-        'background-color': '#CCCCCC',
-        'border-color': 'data(color)',
-        'border-width': '1px',
-        'border-style': 'solid',
-        'text-valign' : 'center',
-        'text-halign' : 'center',
-        'text-wrap': 'ellipsis',
-        shape: 'round-rectangle',
-        'font-size': '4pt',
-      }
-    },
-    {
-      selector: 'edge',
-      style: {
-        width: 1,
-        'curve-style': 'bezier'//curve-style : straight, bezier, unbundled-bezier, segments, taxi, haystack
-      }
-    }
-  ]
+  bigGraphStylesheet: Stylesheet[] = [new StylesheetImpl()]
+  graph2Stylesheet: Stylesheet[]  = [new StylesheetImpl()]
+  graph3Stylesheet: Stylesheet[] = [new StylesheetImpl()]
 
   constructor(public cyNodeService: CyNodeService) {
   }
@@ -157,19 +146,11 @@ export class AppComponent implements OnInit{
     this.cyNodeService.getStylesheet(bigChart).subscribe(stylesheet => {
       return this.cyNodeService.getData(bigChart).subscribe(result => {
         this.stampNodeAndElementGroupsAndDeleteFields(result, ['curve-style'])
-        this.bigGraphStylesheet = stylesheet
+        this.bigGraphStylesheet = stylesheet.style
         this.bigGraphNodes = result.elements.nodes
         this.bigGraphEdges = result.elements.edges
       })
     })
-    // cyNodeService.get24Neighbors().subscribe(result => {
-    //   // console.log(`24 Neighbors: ${JSON.stringify(result)}`)
-    //   this.cyChartData24Neighbors =  result
-    //   this.neighbor24Nodes = result.elements.nodes
-    //   this.neighbor24Edges = result.elements.edges
-    //   console.log(`24 Neighbors edges: ${JSON.stringify(result.elements.edges)}`)
-    // })
-    // this.test2ToBigGraph()
     this.graph2Nodes = [
       {
         "data":
@@ -237,7 +218,7 @@ export class AppComponent implements OnInit{
     })
   }
 
-  // Without this called with ['curve-style'], you get:
+  // Without this called with ['curve-bigGraphStylesJSON'], you get:
   // core.js:6272 ERROR Error: An element must have a core reference and parameters set
   // at ke (cytoscape.min.js:23)
   // at new Re (cytoscape.min.js:23)
@@ -259,13 +240,25 @@ export class AppComponent implements OnInit{
     this.bigGraph?.render()
   }
 
+  bigGraphLayoutStylesToolbarChange($event: cytoscape.Stylesheet[]) {
+    console.log(`app gets biggraph style toolbar change ${JSON.stringify($event)}`)
+    this.bigGraph?.render()
+  }
+
+  bigGraphLayoutStylesSelectorChange(selector: string) {
+    console.log(`app gets biggraph style selector change: ${JSON.stringify(selector)}`)
+    // this.bigGraph?.centerElements(selector)
+    this.bigGraph?.zoomToElement(selector)
+  }
+
   graph2LayoutToolbarChange($event: any) {
-    console.log(`app gets graph2 layout toolbar change ${JSON.stringify($event)}`)
+    console.log(`app gets graph2 layout toolbar change: ${JSON.stringify($event)}`)
     this.graph2?.render()
   }
 
   graph3LayoutToolbarChange($event: any) {
-    console.log(`app gets graph3 layout toolbar change ${JSON.stringify($event)}`)
+    console.log(`app gets graph3 layout toolbar change: ${JSON.stringify($event)}`)
     this.graph3?.render()
   }
+
 }
