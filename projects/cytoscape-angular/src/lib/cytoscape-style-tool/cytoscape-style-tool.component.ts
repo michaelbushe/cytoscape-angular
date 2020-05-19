@@ -1,7 +1,12 @@
 import { AfterViewChecked, AfterViewInit, Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core'
 import { Stylesheet, StylesheetStyle } from 'cytoscape'
 import { FieldInfo, FieldsetInfo, FormInfo } from '../fluid-form/FormInfo'
-import { createStyleCoreFormInfo, createStyleNodeFieldSets, StylesheetImpl } from '../style/style'
+import {
+  createStyleCoreFormInfo,
+  createStyleEdgeFieldSets,
+  createStyleNodeFieldSets,
+  StylesheetImpl
+} from '../style/style'
 
 
 @Component({
@@ -15,7 +20,7 @@ import { createStyleCoreFormInfo, createStyleNodeFieldSets, StylesheetImpl } fro
         <button class="add-button" pButton label="&nbsp;&nbsp;Add&nbsp;&nbsp;"
                 [disabled]="!enableAdd" (click)="onAddSelector()"></button>
         <span>&nbsp;&nbsp;</span>
-        <label for="selectorDropDown">Selectors:</label>
+        <label for="selectorDropDown"><a href="https://js.cytoscape.org/#selectors">Selectors</a></label>
         <p-autoComplete #selectorDropDown id="selectorDropDown" class="selector-drop-down"
                         placeholder="Selector"
                         [(ngModel)]="selectedStyleSheet"
@@ -35,10 +40,11 @@ import { createStyleCoreFormInfo, createStyleNodeFieldSets, StylesheetImpl } fro
     <hr>
     <div class="apply-div">
       <button class="apply-button" pButton label="Apply" [disabled]="!changed" (click)="onApplyStyle()"></button>
-      <span class="selector-span">Selector: </span><span>{{selectedStyleSheet.selector}}</span>
+      <span class="selector-span">Selector </span><span>{{selectedStyleSheet.selector}}</span>
     </div>
     <ng-container *ngIf="!selectedStyleSheet">
-      <div> Please select a selector above or type a selector and click "Add" to create a new stylesheet for that selector.</div>
+      <div> Please select a <a href="https://js.cytoscape.org/#selectors">selector</a> above or type a selector name
+            and click "Add" to create a new stylesheet for that selector.</div>
     </ng-container>
     <ng-container *ngIf="selectedStyleSheet?.selector?.startsWith('node')">
       <cyng-fluid-form [model]="selectedStyleSheet.style"
@@ -125,7 +131,7 @@ export class CytoscapeStyleToolComponent implements OnInit, OnChanges, AfterView
   ngOnInit(): void {
     this.coreFormInfo = CytoscapeStyleToolComponent.createStyleFormInfo()
     this.nodeFormInfo = new FormInfo('Node', createStyleNodeFieldSets())
-    this.edgeFormInfo = new FormInfo('Edge', createStyleNodeFieldSets())
+    this.edgeFormInfo = new FormInfo('Edge', createStyleEdgeFieldSets())
     if (!this.styles) {
       this.styles = [new StylesheetImpl()]
     }
@@ -183,7 +189,7 @@ export class CytoscapeStyleToolComponent implements OnInit, OnChanges, AfterView
     const newStylesheetStyle: StylesheetStyle = new StylesheetImpl()
     newStylesheetStyle.selector = this.lastValidSelectorModelText
     console.log('Adding new style with selector:', this.lastValidSelectorModelText)
-    this.styles.push(newStylesheetStyle)
+    this.styles.unshift(newStylesheetStyle)
     this.selectedStyleSheet = newStylesheetStyle
   }
 

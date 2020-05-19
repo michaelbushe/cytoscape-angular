@@ -70,6 +70,11 @@ function fieldSorter(field1: FieldInfo, field2: FieldInfo): number {
   }
 }
 
+export function createStyleEdgeFieldSets() {
+  const fieldsetInfos: FieldsetInfo[] = []
+  return fieldsetInfos
+}
+
 export function createStyleNodeFieldSets() {
   const fieldsetInfos: FieldsetInfo[] = []
 

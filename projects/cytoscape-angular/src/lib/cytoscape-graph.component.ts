@@ -29,7 +29,7 @@ declare var cytoscape: any
   styles: [`
     .spinner {
       position: absolute;
-      left: '50%';
+      left: '350px';
       z-index: 10;
       width: '250px';
       height: '250px';
@@ -56,7 +56,7 @@ declare var cytoscape: any
     }`
   ]
 })
-export class CytoscapeGraphComponent implements OnChanges, AfterViewInit {
+export class CytoscapeGraphComponent implements OnChanges {
   @ViewChild('cyGraph')
   cyGraph: ElementRef
 
@@ -130,20 +130,10 @@ export class CytoscapeGraphComponent implements OnChanges, AfterViewInit {
 
   public ngOnChanges(changes: SimpleChanges): any {
     console.log('cytoscape graph component ngOnChanges. changes:', JSON.stringify(changes))
-    this.loading = true
-    setTimeout(()=> {
       if (changes["style"]) {
         console.log('changes["style"]:', JSON.stringify(changes["style"]))
+        this.runWhileLoading(this.updateStyles.bind(this))
       }
-      this.render()
-      setTimeout(() => {
-        this.loading = false
-      }, 0)
-    }, 0)
-  }
-
-  ngAfterViewInit(): void {
-    this.render()
   }
 
   public centerElements(selector) {
@@ -166,13 +156,34 @@ export class CytoscapeGraphComponent implements OnChanges, AfterViewInit {
   }
 
   public render() {
+    this.runWhileLoading(this.rerender.bind(this))
+  }
+
+  public runWhileLoading(f: Function) {
+    this.loading = true
+    setTimeout(()=> {
+      f()
+      setTimeout(() => {
+        this.loading = false
+      }, 30)
+    }, 0)
+  }
+
+  private updateStyles() {
+    if (this.cy && this.style) {
+      this.cy.style(this.style)
+    }
+  }
+
+  public rerender() {
+    //TODO : this takes a heavy-handed approach, refine for performance
     if (!this.cyGraph) {
       console.warn(`No cyGraph found`)
       return
     }
 
     const cyOptions = this.cyOptions || {
-      // ignored, use nodes and edges only?
+      // ignored, use nodes and edges
       // elements: this.elements,
       autolock: this.autolock,
       autoungrabify: this.autoungrabify,
@@ -218,10 +229,6 @@ export class CytoscapeGraphComponent implements OnChanges, AfterViewInit {
 }
 
 /*
-background-color : The colour of the node’s body.
-background-blacken : Blackens the node’s body for values from 0 to 1; whitens the node’s body for values from 0 to -1.
-background-opacity : The opacity level of the node’s background colour.
-background-fill : The filling bigGraphStylesJSON of the node’s body; may be solid (default), linear-gradient, or radial-gradient.
 Gradient:
 
 background-gradient-stop-colors : The colours of the background gradient stops (e.g. cyan magenta yellow).
@@ -235,11 +242,4 @@ to-bottom-right
 to-bottom-left
 to-top-right
 to-top-left
-Border:
-
-border-width : The size of the node’s border.
-border-bigGraphStylesJSON : The bigGraphStylesJSON of the node’s border; may be solid, dotted, dashed, or double.
-border-color : The colour of the node’s border.
-border-opacity : The opacity of the node’s border.
-
  */

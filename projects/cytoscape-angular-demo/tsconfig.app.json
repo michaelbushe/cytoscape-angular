@@ -13,7 +13,7 @@
   ],
   "paths": {
     "cytoscape-angular": [
-      "dist/cytoscape-angular"
+      "../../dist/cytoscape-angular"
     ]
   }
 }

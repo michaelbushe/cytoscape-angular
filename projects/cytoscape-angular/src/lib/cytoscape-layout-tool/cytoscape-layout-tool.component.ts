@@ -50,12 +50,13 @@ import { FieldInfo, FieldsetInfo, FormInfo } from '../fluid-form/FormInfo'
         [options]="layoutOptionsList"
         [(ngModel)]="layoutOptions"
         optionLabel="name"
+        (ngModelChange)="onLayoutModelChange()">
       ></p-dropdown>
       <button class="apply-button" pButton label="Apply" [disabled]="!changed" (click)="onApplyLayout()"></button>
     </div>
     <cyng-fluid-form [model]="layoutOptions" [formInfo]="formInfo" (modelChange)="onFormModelChange()"></cyng-fluid-form>
   `})
-export class CytoscapeLayoutToolComponent implements OnInit, OnChanges, AfterViewInit, AfterViewChecked {
+export class CytoscapeLayoutToolComponent implements OnInit, OnChanges {
   private static LAYOUT_FORM_INFO: FormInfo
 
   @ViewChild('layoutForm') layoutForm;
@@ -108,12 +109,9 @@ export class CytoscapeLayoutToolComponent implements OnInit, OnChanges, AfterVie
     }
   }
 
-  ngAfterViewInit(): void {
-   // console.debug("ngAfterViewInit")
-  }
-
-  ngAfterViewChecked(): void {
-   // console.debug("ngAfterViewChecked")
+  onLayoutModelChange() {
+    console.log('Layout model change: ', JSON.stringify(this.layoutOptions))
+    this.changed = true
   }
 
   onFormModelChange() {
