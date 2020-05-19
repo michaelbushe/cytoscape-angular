@@ -96,7 +96,6 @@ import {
   `]
 })
 export class CytoscapeStyleToolComponent implements OnInit, OnChanges, AfterViewInit, AfterViewChecked {
-  private static CORE_STYLE_FORM_INFO: FormInfo
   @ViewChild('styleForm') styleForm;
   @ViewChild('selectorDropDown') selectorDropDown;
 
@@ -129,7 +128,7 @@ export class CytoscapeStyleToolComponent implements OnInit, OnChanges, AfterView
   }
 
   ngOnInit(): void {
-    this.coreFormInfo = CytoscapeStyleToolComponent.createStyleFormInfo()
+    this.coreFormInfo = createStyleCoreFormInfo()
     this.nodeFormInfo = new FormInfo('Node', createStyleNodeFieldSets())
     this.edgeFormInfo = new FormInfo('Edge', createStyleEdgeFieldSets())
     if (!this.styles) {
@@ -178,12 +177,6 @@ export class CytoscapeStyleToolComponent implements OnInit, OnChanges, AfterView
     })
   }
 
-  private static createStyleFormInfo(): FormInfo {
-    if (!CytoscapeStyleToolComponent.CORE_STYLE_FORM_INFO) {
-      CytoscapeStyleToolComponent.CORE_STYLE_FORM_INFO = createStyleCoreFormInfo()
-    }
-    return CytoscapeStyleToolComponent.CORE_STYLE_FORM_INFO
-  }
 
   onAddSelector() {
     const newStylesheetStyle: StylesheetStyle = new StylesheetImpl()

@@ -57,7 +57,7 @@ import { FieldInfo, FieldsetInfo, FormInfo } from '../fluid-form/FormInfo'
     <cyng-fluid-form [model]="layoutOptions" [formInfo]="formInfo" (modelChange)="onFormModelChange()"></cyng-fluid-form>
   `})
 export class CytoscapeLayoutToolComponent implements OnInit, OnChanges {
-  private static LAYOUT_FORM_INFO: FormInfo
+  private static LAYOUT_FORM_INFO: FormInfo = CytoscapeLayoutToolComponent.createLayoutFormInfo()
 
   @ViewChild('layoutForm') layoutForm;
 
@@ -136,7 +136,6 @@ export class CytoscapeLayoutToolComponent implements OnInit, OnChanges {
   }
 
   private static createLayoutFormInfo(): FormInfo {
-    if (!CytoscapeLayoutToolComponent.LAYOUT_FORM_INFO) {
       let fit = new FieldInfo('Fit', 'fit', 'boolean', 'Whether to fit to viewport')
       let padding = new FieldInfo('Padding', 'padding', 'number','When fit to viewport, padding inside the viewport.')
 
@@ -229,13 +228,11 @@ export class CytoscapeLayoutToolComponent implements OnInit, OnChanges {
 
       //boundingBox: undefined // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
 
-      CytoscapeLayoutToolComponent.LAYOUT_FORM_INFO = new FormInfo('Layout',
+      return new FormInfo('Layout',
         [
           breadthFirstFieldset, coseFieldset, dagreFieldset, gridFieldset, circularFieldSet, concentricFieldSet,
           fitFieldset, animationFieldset, shapedFieldset ],
         false)
-    }
-    return CytoscapeLayoutToolComponent .LAYOUT_FORM_INFO
   }
 }
 /*
