@@ -219,11 +219,17 @@ export class CytoscapeGraphComponent implements OnChanges {
     this.cy.boxSelectionEnabled(this.boxSelectionEnabled)
     this.cy.nodes().remove()
     this.cy.edges().remove()
-    this.cy.add(this.nodes)
-    this.cy.add(this.edges)
+    if (this.nodes) {
+      this.cy.add(this.nodes)
+    }
+    if (this.edges) {
+      this.cy.add(this.edges)
+    }
     this.cy.endBatch()
     console.log(`laying out ${this.nodes.length} nodes with ${this.layoutOptions.name}`)
-    this.cy.layout(this.layoutOptions).run()
+    if (this.layoutOptions) {
+      this.cy.layout(this.layoutOptions).run()
+    }
     console.log(`ended redraw`)
   }
 }

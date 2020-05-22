@@ -104,7 +104,7 @@ export class AppComponent implements OnInit{
     })
   }
 
-  // Without this called with ['curve-bigGraphStylesJSON'], you get:
+  // Without this called with ['curve-bezier'], you get:
   // core.js:6272 ERROR Error: An element must have a core reference and parameters set
   // at ke (cytoscape.min.js:23)
   // at new Re (cytoscape.min.js:23)
