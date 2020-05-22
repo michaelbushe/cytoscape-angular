@@ -214,7 +214,6 @@ export class CytoscapeGraphComponent implements OnChanges {
     }
     // TODO do reset() instead?
     this.cy = cytoscape(cyOptions)
-    console.log(`starting redraw`)
     this.cy.startBatch()
     this.cy.boxSelectionEnabled(this.boxSelectionEnabled)
     this.cy.nodes().remove()
@@ -226,11 +225,9 @@ export class CytoscapeGraphComponent implements OnChanges {
       this.cy.add(this.edges)
     }
     this.cy.endBatch()
-    console.log(`laying out ${this.nodes.length} nodes with ${this.layoutOptions.name}`)
     if (this.layoutOptions) {
       this.cy.layout(this.layoutOptions).run()
     }
-    console.log(`ended redraw`)
   }
 }
 

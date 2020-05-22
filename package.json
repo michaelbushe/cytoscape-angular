@@ -1,13 +1,15 @@
 {
   "name": "cytoscape-angular-project",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "publish": "ng build cytoscape-angular --prod &&  ng build cytoscape-angular-demo --prod &&  ng build cytoscape-angular --prod && cd dist/cytoscape-angular && npm publish",
+    "firebase:deploy": "firebase deploy"
   },
   "peerDependencies": {
     "@angular/animations": "~9.1.0",

@@ -36,13 +36,11 @@ Run `npm run test` to execute the unit tests via [Karma](https://karma-runner.gi
 Run `npm run e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
 ## Deploy library to npm
-`ng build cytoscape-angular --prod`
-`ng build cytoscape-angular-demo --prod`
-`ng build cytoscape-angular --prod` (yes, again)
-`cd dist/cytoscape-angular`
-`npm publish`
-`cd ../..`
-`firebase deploy`
+`npm run publish`
+
+## Deploy demo to firebase
+`npm run firebase:deploy`
+
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
