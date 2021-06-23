@@ -1,10 +1,10 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core'
+import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core'
 import { EdgeDefinition, NodeDefinition, Stylesheet } from 'cytoscape'
 import dagre from 'cytoscape-dagre'
 import { CyNodeService } from './cy-node.service'
 import { CoseLayoutOptionsImpl, CytoscapeGraphComponent } from 'cytoscape-angular'
 import { StylesheetImpl } from '../../../cytoscape-angular/src/lib/style/style'
-
+import {combineLatest, Subscription} from 'rxjs'
 declare var cytoscape: any
 
 @Component({
@@ -65,33 +65,35 @@ declare var cytoscape: any
     `
   ]
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('biggraph')
   bigGraph: CytoscapeGraphComponent
   bigGraphLayoutOptions = new CoseLayoutOptionsImpl()
   bigGraphNodes: NodeDefinition[] = []
   bigGraphEdges: EdgeDefinition[] = []
   bigGraphStylesheet: Stylesheet[] = [new StylesheetImpl()]
+  subscription: Subscription
 
   constructor(public cyNodeService: CyNodeService) {
   }
 
   ngOnInit(): void {
     cytoscape.use(dagre)
-    let bigChart = 'Signaling-by-Activin TO Signaling-by-TGF-beta-Receptor-Complex k=3' // 'pathogenesis-weighted-test-4'  // 'NetPath-Brain-derived-neurotrophic-factor-(BDNF)-pathway'
-    this.cyNodeService.getStylesheet(bigChart).subscribe(stylesheet => {
-      return this.cyNodeService.getData(bigChart).subscribe(result => {
-        this.stampNodeAndElementGroupsAndDeleteFields(result, ['curve-style'])
+    const bigChart = 'Signaling-by-Activin TO Signaling-by-TGF-beta-Receptor-Complex k=3'
+    const dataObs = this.cyNodeService.getData(bigChart)
+    const stylesheetObs = this.cyNodeService.getStylesheet(bigChart)
+    this.subscription = combineLatest(dataObs, stylesheetObs).subscribe(([data, stylesheet]) => {
+        this.stampNodeAndElementGroupsAndDeleteFields(data, ['curve-style'])
         this.bigGraphStylesheet = stylesheet.style
-        this.bigGraphNodes = result.elements.nodes
-        this.bigGraphEdges = result.elements.edges
+        this.bigGraphNodes = data.elements.nodes
+        this.bigGraphEdges = data.elements.edges
       })
-    })
   }
 
   @HostListener('window:beforeunload', ['$event'])
   ngOnDestroy() {
     console.log(`on destroy`)
+    this.subscription.unsubscribe()
   }
 
   private stampNodeAndElementGroupsAndDeleteFields(result, edgeFields: string[]) {
