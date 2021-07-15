@@ -64,3 +64,13 @@ Run `ng test cytoscape-angular` to execute the unit tests via [Karma](https://ka
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+
+Fetching dependency metadata from registry...
+Package "primeng" has an incompatible peer dependency to "@angular/common" (requires "^7.0.0 || ^8.0.0 || ^9.0.0" (extended), would install "12.1.2").
+Package "ng-packagr" has an incompatible peer dependency to "@angular/compiler" (requires "^9.0.0" (extended), would install "12.1.2").
+Package "primeng" has an incompatible peer dependency to "@angular/core" (requires "^7.0.0 || ^8.0.0 || ^9.0.0" (extended), would install "12.1.2").
+Package "primeng" has an incompatible peer dependency to "@angular/forms" (requires "^7.0.0 || ^8.0.0 || ^9.0.0" (extended), would install "12.1.2").
+Package "primeng" has an incompatible peer dependency to "zone.js" (requires "^0.10.2", would install "0.11.4").
+Package "@angular-devkit/build-angular" has an incompatible peer dependency to "@angular/compiler-cli" (requires ">=9.0.0 < 10" (extended), would install "12.1.2").
+Package "@angular-devkit/build-angular" has an incompatible peer dependency to "typescript" (requires ">=3.6 < 3.9", would install "4.3.5").
