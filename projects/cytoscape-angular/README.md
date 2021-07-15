@@ -4,15 +4,20 @@
  The intent is to provide an Angular component that fully covers the Cytoscape API via 
  [cytoscape.js](https://js.cytoscape.org), it's getting close to full coverage.
    
- Other components allows every Cytoscape bit to be twiddled - a toolbar and forms to 
- edit all the properties of the graph including layout parameters and styles that can enhance 
- a cytoscape graph on the fly.  
+ Other components in the library let users customize a cytoscape graph - toolbar and forms 
+ have editors for all the properties of the graph including layout parameters and styles that can enhance 
+ a cytoscape graph on the fly.  (Saving the changes are not implemented but should be pretty easy.)
  
- In addition to all the layouts that come with cytoscape, the dagre layout for directed graphs is
- included.  Other generic layouts will be supported in a future release.
+ In addition to all the layouts that come with cytoscape.js, cytoscape-angular also adds 
+ the dagre layout for directed graphs is included.  Other generic layouts will be supported 
+ in a future release.
  
  ## Usage 
  For a full demo see the sister project in this repo, cytoscape-angular-demo.
+ To get your own Angular project running with cytoscape-angular:
+ - cytoscape-angular-demo to a new directory
+ - In the new directory run:
+   npm install 
  
  If you don't have an angular app, create one, it's so easy.  Install and use the
  [Angular CLI](https://github.com/angular/angular-cli)
