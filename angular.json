@@ -22,7 +22,6 @@
             "main": "projects/cytoscape-angular-demo/src/main.ts",
             "polyfills": "projects/cytoscape-angular-demo/src/polyfills.ts",
             "tsConfig": "projects/cytoscape-angular-demo/tsconfig.app.json",
-            "aot": true,
             "assets": [
               "projects/cytoscape-angular-demo/src/favicon.ico",
               "projects/cytoscape-angular-demo/src/assets"
@@ -35,7 +34,13 @@
             ],
             "scripts": [
               "node_modules/cytoscape/dist/cytoscape.min.js"
-            ]
+            ],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -48,7 +53,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -66,7 +70,8 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -136,7 +141,7 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/cytoscape-angular/tsconfig.lib.json",
             "project": "projects/cytoscape-angular/ng-package.json"
