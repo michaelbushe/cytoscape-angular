@@ -1,6 +1,6 @@
 {
   "name": "cytoscape-angular",
-  "version": "0.8.7",
+  "version": "0.8.10",
   "description": "Angular 12+ components for cytoscape charting.",
   "author": "Michael Bushe mike@MindfulSoftware.com",
   "repository": "https://github.com/michaelbushe/cytoscape-angular.git",

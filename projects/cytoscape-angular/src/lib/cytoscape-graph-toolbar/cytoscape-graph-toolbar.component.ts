@@ -1,39 +1,18 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { EdgeDefinition, LayoutOptions, NodeDefinition, Stylesheet } from 'cytoscape'
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'cytoscape-graph-toolbar',
   template: `
     <div class="toolbar-container"
          [class.row-layout]="direction === 'row'"
          [class.column-layout]="direction === 'column'">
-      <p-overlayPanel #layoutToolbaroverlay
-                      [dismissable]="true" [showCloseIcon]="true"
-      >
+<!--      <p-overlayPanel #layoutToolbaroverlay-->
+<!--                      [dismissable]="true" [showCloseIcon]="true"-->
+<!--      >-->
         <ng-template pTemplate>
           <cytoscape-layout-tool [(layoutOptions)]="layoutOptions"></cytoscape-layout-tool>
         </ng-template>
-      </p-overlayPanel>
-      <p-button *ngIf="showToolbarButtons"
-                label="{{layoutOptions.name | titlecase }} Layout"
-                [class.max-button-width]="direction === 'column'"
-                pTooltip="Layout Settings..."
-                icon="pi pi-sliders-v"
-                (click)="layoutToolbaroverlay.toggle($event)"></p-button>
-      <p-overlayPanel #styleToolbaroverlay [dismissable]="true" [showCloseIcon]="true">
-        <ng-template pTemplate>
-          <cytoscape-style-tool
-            [(styles)]="styles"
-            (stylesChange)="onStylesChange($event)"
-            (styleSelectorChange)="onStyleSelectorChange($event)"></cytoscape-style-tool>
-        </ng-template>
-      </p-overlayPanel>
-      <p-button *ngIf="showToolbarButtons"
-                [class.max-button-width]="direction === 'column'"
-                label="Style"
-                pTooltip="Styling..."
-                icon="pi pi-palette"
-                (click)="styleToolbaroverlay.toggle($event)">
-      </p-button>
       <span class="graph-data" *ngIf="nodes">{{nodes.length}} Nodes &nbsp;</span>
       <span class="graph-data" *ngIf="edges">{{edges.length}} Edges</span>
     </div>
@@ -72,30 +51,30 @@ export class CytoscapeGraphToolbarComponent implements OnInit {
   @Input()
   direction: 'column' | 'row' = 'row'
 
-  _layoutOptions: LayoutOptions
+  #_layoutOptions: LayoutOptions
   @Input()
   get layoutOptions(): LayoutOptions {
-    return this._layoutOptions;
+    return this.#_layoutOptions
   }
   set layoutOptions(value) {
     console.log(`Graph toolbar gets new layout options ${JSON.stringify(value)}`)
-    this._layoutOptions = value;
-    this.layoutOptionsChange.emit(this._layoutOptions);
+    this.#_layoutOptions = value
+    this.layoutOptionsChange.emit(this.#_layoutOptions)
   }
-  @Output() layoutOptionsChange: EventEmitter<LayoutOptions> = new EventEmitter<LayoutOptions>();
+  @Output() layoutOptionsChange: EventEmitter<LayoutOptions> = new EventEmitter<LayoutOptions>()
 
-  _styles: Stylesheet[]
+  #_styles: Stylesheet[]
   @Input()
   get styles(): Stylesheet[] {
-    return this._styles;
+    return this.#_styles
   }
   set styles(styles: Stylesheet[]) {
-    this._styles = styles;
-    this.stylesChange.emit(this._styles);
+    this.#_styles = styles
+    this.stylesChange.emit(this.#_styles)
   }
-  @Output() stylesChange: EventEmitter<Stylesheet[]> = new EventEmitter<Stylesheet[]>();
+  @Output() stylesChange: EventEmitter<Stylesheet[]> = new EventEmitter<Stylesheet[]>()
 
-  @Output() styleSelectorChange: EventEmitter<string> = new EventEmitter<string>();
+  @Output() styleSelectorChange: EventEmitter<string> = new EventEmitter<string>()
 
   @Input()
   showLayoutToolbarButton: boolean

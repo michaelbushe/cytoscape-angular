@@ -1,5 +1,5 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core'
-import { EdgeDefinition, NodeDefinition, Stylesheet } from 'cytoscape'
+import {EdgeDefinition, LayoutOptions, NodeDefinition, Stylesheet} from 'cytoscape';
 // @ts-ignore
 import dagre from 'cytoscape-dagre'
 import { CyNodeService } from './cy-node.service'
@@ -29,22 +29,23 @@ declare var cytoscape: any
     <div style="display: flex;">
       <cytoscape-graph #biggraph title="TGF-beta-Receptor"
                        class="medium-graph"
+                       [debug]=true
                        [showToolbar]=true
                        [nodes]="bigGraphNodes"
                        [edges]="bigGraphEdges"
                        [style]="bigGraphStylesheet"
                        [layoutOptions]="bigGraphLayoutOptions">
       </cytoscape-graph>
-<!--      <cytoscape-graph-toolbar [(layoutOptions)]="bigGraphLayoutOptions"-->
-<!--                               [(styles)]="bigGraphStylesheet"-->
-<!--                               [showToolbarButtons]="true"-->
-<!--                               (layoutOptionsChange)="bigGraphLayoutToolbarChange($event)"-->
-<!--                               (stylesChange)="bigGraphLayoutStylesToolbarChange($event)"-->
-<!--                               (styleSelectorChange)="bigGraphLayoutStylesSelectorChange($event)"-->
-<!--                               [nodes]="bigGraphNodes"-->
-<!--                               [edges]="bigGraphEdges"-->
-<!--                               direction="column"-->
-<!--      ></cytoscape-graph-toolbar>-->
+      <cytoscape-graph-toolbar [(layoutOptions)]="bigGraphLayoutOptions"
+                               [(styles)]="bigGraphStylesheet"
+                               [showToolbarButtons]="true"
+                               (layoutOptionsChange)="bigGraphLayoutToolbarChange($event)"
+                               (stylesChange)="bigGraphLayoutStylesToolbarChange($event)"
+                               (styleSelectorChange)="bigGraphLayoutStylesSelectorChange($event)"
+                               [nodes]="bigGraphNodes"
+                               [edges]="bigGraphEdges"
+                               direction="column"
+      ></cytoscape-graph-toolbar>
     </div>
   `,
   styles: [
@@ -67,11 +68,12 @@ declare var cytoscape: any
 export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('biggraph')
   bigGraph: CytoscapeGraphComponent | null
-  bigGraphLayoutOptions = new CoseLayoutOptionsImpl()
+  bigGraphLayoutOptions: LayoutOptions = new CoseLayoutOptionsImpl()
   bigGraphNodes: NodeDefinition[] = []
   bigGraphEdges: EdgeDefinition[] = []
   bigGraphStylesheet: Stylesheet[] = [new StylesheetImpl()]
   subscription: Subscription | undefined
+  title = 'Cytoscape Angular Demo'
 
   constructor(public cyNodeService: CyNodeService) {
     this.bigGraph = null

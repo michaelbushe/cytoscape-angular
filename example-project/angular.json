@@ -26,6 +26,7 @@
             "outputPath": "dist/cytoscape-angular-example",
             "index": "src/index.html",
             "main": "src/main.ts",
+            "preserveSymlinks": true,
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
@@ -45,8 +46,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "1mb",
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",

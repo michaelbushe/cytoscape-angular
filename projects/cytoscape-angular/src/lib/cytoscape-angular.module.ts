@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule } from '@angular/core'
 import { CytoscapeGraphComponent } from './cytoscape-graph.component'
 import { CytoscapeGraphToolbarComponent } from './cytoscape-graph-toolbar/cytoscape-graph-toolbar.component'
 import { AutoCompleteModule } from 'primeng/autocomplete'
@@ -31,6 +31,7 @@ import { FluidFormComponent } from './fluid-form/fluid-form.component'
     FormsModule,
     ReactiveFormsModule,
     ButtonModule,
+    CommonModule,
     DropdownModule,
     FieldsetModule,
     InputSwitchModule,

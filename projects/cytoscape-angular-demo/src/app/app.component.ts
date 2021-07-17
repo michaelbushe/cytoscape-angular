@@ -93,7 +93,9 @@ export class AppComponent implements OnInit, OnDestroy {
   @HostListener('window:beforeunload', ['$event'])
   ngOnDestroy() {
     console.log(`on destroy`)
-    this.subscription.unsubscribe()
+    if (this.subscription != null) {
+      this.subscription.unsubscribe()
+    }
   }
 
   private stampNodeAndElementGroupsAndDeleteFields(result, edgeFields: string[]) {

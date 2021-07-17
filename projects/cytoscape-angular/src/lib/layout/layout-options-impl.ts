@@ -116,9 +116,9 @@ export class CircleLayoutOptionsImpl extends ShapedLayoutOptionsImpl {
 export class ConcentricLayoutOptionsImpl {
   name = 'concentric'
   // how many radians should be between the first and last node (defaults to full circle)
-  sweep?: number;
+  sweep?: number
   // whether the layout should go clockwise (true) or counterclockwise/anticlockwise (false)
-  clockwise?: boolean;
+  clockwise?: boolean
   // where nodes start in radians, e.g. 3 / 2 * Math.PI,
   startAngle: number = 3 / 2 * Math.PI
   fit: boolean
@@ -197,10 +197,10 @@ export class CoseLayoutOptionsImpl extends ShapedLayoutOptionsImpl {
   minTemp = 1.0
 
   // Node repulsion (non overlapping) multiplier
-  nodeRepulsion =  function( node ){ return 2048 }
+  nodeRepulsion =  ( node ) => 2048
 
   // Ideal edge (non nested) length
-  idealEdgeLength = ( edge ) => { return 32 }
+  idealEdgeLength = ( edge ) => 32
 
   // Divisor to compute edge forces
   edgeElasticity = ( edge ) => 32
@@ -211,10 +211,10 @@ type Ranker = 'network-simplex' | 'tight-tree' | 'longest-path'
 
 export class DagreLayoutOptionsImpl extends ShapedLayoutOptionsImpl {
   constructor() {
-    super();
+    super()
   }
 
-  name= 'dagre'
+  name = 'dagre'
 
   nodeSep: number = null // the separation between adjacent nodes in the same rank
   edgeSep: number = null // the separation between adjacent edges in the same rank
@@ -225,6 +225,6 @@ export class DagreLayoutOptionsImpl extends ShapedLayoutOptionsImpl {
   // Possible values: 'network-simplex', 'tight-tree' or 'longest-path'
   ranker: Ranker = null
   // number of ranks to keep between the source and target of the edge
-  minLen = ( edge ) => { return 1 }
-  edgeWeight = ( edge ) => { return 1 } // higher weight edges are generally made shorter and straighter than lower weight edges
+  minLen = ( edge ) => 1
+  edgeWeight = ( edge ) => 1 // higher weight edges are generally made shorter and straighter than lower weight edges
 }
