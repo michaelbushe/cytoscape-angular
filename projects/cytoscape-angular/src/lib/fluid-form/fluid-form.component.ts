@@ -2,7 +2,7 @@ import {
   AfterViewChecked, AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges
 } from '@angular/core'
 import { AsyncValidatorFn, FormControl, FormGroup, ValidatorFn } from '@angular/forms'
-import { FormInfo } from './FormInfo'
+import { FormInfo } from './form-info'
 
 @Component({
   selector: 'cyng-fluid-form',

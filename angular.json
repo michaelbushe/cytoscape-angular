@@ -27,7 +27,7 @@
               "projects/cytoscape-angular-demo/src/assets"
             ],
             "styles": [
-              "node_modules/primeng/resources/themes/nova-light/theme.css",
+              "node_modules/primeng/resources/themes/nova-accent/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/primeicons/primeicons.css",
               "projects/cytoscape-angular-demo/src/styles.scss"
@@ -177,5 +177,5 @@
   "cli": {
     "analytics": "be3a80a9-889b-40dd-a9f6-b0f280335b17"
   },
-  "defaultProject": "cytoscape-angular-demo"
+  "defaultProject": "cytoscape-angular"
 }

@@ -15,7 +15,7 @@ import { LayoutOptions } from 'cytoscape'
 import { BreadthFirstLayoutOptionsImpl, CircleLayoutOptionsImpl, ConcentricLayoutOptionsImpl, CoseLayoutOptionsImpl,
   DagreLayoutOptionsImpl, GridLayoutOptionsImpl, NullLayoutOptionsImpl, PresetLayoutOptionsImpl, RandomLayoutOptionsImpl
 } from '../layout/layout-options-impl'
-import { FieldInfo, FieldsetInfo, FormInfo } from '../fluid-form/FormInfo'
+import { FieldInfo, FieldsetInfo, FormInfo } from '../fluid-form/form-info'
 
 @Component({
   selector: 'cytoscape-layout-tool',

@@ -111,3 +111,4 @@ node_modules/
 
 # dotenv environment variables file
 .env
+/example-project/package-lock.json

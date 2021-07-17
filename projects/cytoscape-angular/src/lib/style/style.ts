@@ -1,5 +1,5 @@
 import { StylesheetStyle } from 'cytoscape'
-import { FieldInfo, FieldsetInfo, FieldType, FormInfo } from '../fluid-form/FormInfo'
+import { FieldInfo, FieldsetInfo, FieldType, FormInfo } from '../fluid-form/form-info'
 
 class StyleFieldInfo extends FieldInfo {
   constructor(styleName: string, type: FieldType, hint: string, options?: object[] | string) {
@@ -14,7 +14,7 @@ class StyleFieldInfo extends FieldInfo {
       case 'ShapePolygonPoints':
       case 'NodeShape':
       case 'LineStyle':
-      case 'TextTranformation':
+      case 'TextTransformation':
       case 'FontStyle':
       case 'FontWeight':
       case 'Colour':
@@ -118,7 +118,7 @@ export function createStyleNodeFieldSets() {
       {label: 'center', value: 'center'},
       {label: 'bottom', value: 'bottom'}]))
   nodeFieldInfos.push(new StyleFieldInfo('text-opacity', 'number', 'The opacity of the label text, including its outline.'))
-  nodeFieldInfos.push(new StyleFieldInfo('text-transform', 'TextTranformation', 'A transformation to apply to the label text.'))
+  nodeFieldInfos.push(new StyleFieldInfo('text-transform', 'TextTransformation', 'A transformation to apply to the label text.'))
   fieldsetInfos.push(new FieldsetInfo('Label', nodeFieldInfos))
   nodeFieldInfos = []
 

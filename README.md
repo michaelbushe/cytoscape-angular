@@ -6,6 +6,14 @@ To use, first create an angular application with the [Angular CLI](https://githu
 Then import the CytoscapeGraphModule and use a <cytoscape-graph> element in a template, see the demo code
 in projects/cytoscape-angular-demo/src/app/app.component.ts.
 
+# For developing this lib...Local build
+#NOPE! npm run publish-lib
+npm run pre-publish
+cd dist
+cd cytoscape-angular
+Remove the prepublishOnly scripts hook from package.json 
+npm publish
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.0.
 Using the commands: 
 
@@ -36,11 +44,7 @@ Run `npm run test` to execute the unit tests via [Karma](https://karma-runner.gi
 Run `npm run e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
 ## Deploy library to npm
-`npm run publish`
+`npm run pre-publish && npm publish`
 
 ## Deploy demo to firebase
 `npm run firebase:deploy`
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).

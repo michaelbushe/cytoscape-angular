@@ -1,6 +1,6 @@
 import { AfterViewChecked, AfterViewInit, Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core'
 import { Stylesheet, StylesheetStyle } from 'cytoscape'
-import { FieldInfo, FieldsetInfo, FormInfo } from '../fluid-form/FormInfo'
+import { FieldInfo, FieldsetInfo, FormInfo } from '../fluid-form/form-info'
 import {
   createStyleCoreFormInfo,
   createStyleEdgeFieldSets,
