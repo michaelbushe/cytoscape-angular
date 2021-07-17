@@ -22,10 +22,18 @@ declare var cytoscape: any
 @Component({
   selector: 'cytoscape-graph',
   template: `
+    <p-progressSpinner *ngIf="loading" class="spinner" strokeWidth="4" fill="#EEEEEE" animationDuration=".5s"></p-progressSpinner>
     <div #cyGraph class="graphWrapper">
     </div>
   `,
   styles: [`
+    .spinner {
+      position: absolute;
+      left: '350px';
+      z-index: 10;
+      width: '250px';
+      height: '250px';
+    }
     @keyframes ui-progress-spinner-color {
       100%,
       0% {
