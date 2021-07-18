@@ -1,5 +1,6 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core'
-import { EdgeDefinition, NodeDefinition, Stylesheet } from 'cytoscape'
+import {EdgeDefinition, LayoutOptions, NodeDefinition, Stylesheet} from 'cytoscape';
+// @ts-ignore
 import dagre from 'cytoscape-dagre'
 import { CyNodeService } from './cy-node.service'
 import { CoseLayoutOptionsImpl, CytoscapeGraphComponent } from 'cytoscape-angular'
@@ -28,8 +29,8 @@ declare var cytoscape: any
     <div style="display: flex;">
       <cytoscape-graph #biggraph title="TGF-beta-Receptor"
                        class="medium-graph"
-                       debug="true"
-                       showToolbar="true"
+                       [debug]=true
+                       [showToolbar]=true
                        [nodes]="bigGraphNodes"
                        [edges]="bigGraphEdges"
                        [style]="bigGraphStylesheet"
@@ -73,6 +74,7 @@ export class AppComponent implements OnInit, OnDestroy {
   bigGraphEdges: EdgeDefinition[] = []
   bigGraphStylesheet: Stylesheet[] = [new StylesheetImpl()]
   subscription: Subscription
+  title: 'Cytoscape Angular Demo'
 
   constructor(public cyNodeService: CyNodeService) {
   }

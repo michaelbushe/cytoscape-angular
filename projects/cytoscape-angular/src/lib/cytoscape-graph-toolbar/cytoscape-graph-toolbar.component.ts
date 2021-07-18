@@ -7,12 +7,34 @@ import { EdgeDefinition, LayoutOptions, NodeDefinition, Stylesheet } from 'cytos
     <div class="toolbar-container"
          [class.row-layout]="direction === 'row'"
          [class.column-layout]="direction === 'column'">
-<!--      <p-overlayPanel #layoutToolbaroverlay-->
-<!--                      [dismissable]="true" [showCloseIcon]="true"-->
-<!--      >-->
+      <p-overlayPanel #layoutToolbaroverlay
+                      [dismissable]="true" [showCloseIcon]="true"
+      >
         <ng-template pTemplate>
           <cytoscape-layout-tool [(layoutOptions)]="layoutOptions"></cytoscape-layout-tool>
         </ng-template>
+      </p-overlayPanel>
+      <p-button *ngIf="showToolbarButtons"
+                label="{{layoutOptions.name | titlecase }} Layout"
+                [class.max-button-width]="direction === 'column'"
+                pTooltip="Layout Settings..."
+                icon="pi pi-sliders-v"
+                (click)="layoutToolbaroverlay.toggle($event)"></p-button>
+      <p-overlayPanel #styleToolbaroverlay [dismissable]="true" [showCloseIcon]="true">
+        <ng-template pTemplate>
+          <cytoscape-style-tool
+            [(styles)]="styles"
+            (stylesChange)="onStylesChange($event)"
+            (styleSelectorChange)="onStyleSelectorChange($event)"></cytoscape-style-tool>
+        </ng-template>
+      </p-overlayPanel>
+      <p-button *ngIf="showToolbarButtons"
+                [class.max-button-width]="direction === 'column'"
+                label="Style"
+                pTooltip="Styling..."
+                icon="pi pi-palette"
+                (click)="styleToolbaroverlay.toggle($event)">
+      </p-button>
       <span class="graph-data" *ngIf="nodes">{{nodes.length}} Nodes &nbsp;</span>
       <span class="graph-data" *ngIf="edges">{{edges.length}} Edges</span>
     </div>

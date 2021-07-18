@@ -21,9 +21,9 @@ describe('AppComponent', () => {
   });
 
   it(`should have as title 'cytoscape-angular-demo'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('cytoscape-angular-demo');
+    const fixture = TestBed.createComponent(AppComponent)
+    const app = fixture.componentInstance
+    expect(app.title).toEqual('Cytoscape Angular Demo')
   });
 
   it('should render title', () => {

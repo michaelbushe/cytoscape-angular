@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import {ButtonModule} from 'primeng/button'
 import {InputTextModule} from 'primeng/inputtext'
 import {MenubarModule} from 'primeng/menubar'
+import {OverlayPanelModule} from 'primeng/overlaypanel'
 import {TabViewModule} from 'primeng/tabview'
 import {TooltipModule} from 'primeng/tooltip'
 import { HttpClientModule } from '@angular/common/http'
@@ -24,12 +25,13 @@ import { CytoscapeAngularModule } from 'cytoscape-angular'
     ButtonModule,
     CommonModule,
     CheckboxModule,
+    CytoscapeAngularModule,
     HttpClientModule,
     InputTextModule,
     MenubarModule,
+    OverlayPanelModule,
     TabViewModule,
     TooltipModule,
-    CytoscapeAngularModule
   ],
   providers: [],
   bootstrap: [AppComponent]
