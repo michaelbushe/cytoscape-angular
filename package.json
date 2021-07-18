@@ -1,16 +1,15 @@
 {
   "name": "cytoscape-angular-project",
-  "version": "0.8.11",
+  "version": "0.8.12",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "build-prod": "ng build",
-    "build-demo": "ng build cytoscape-angular-demo",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "pre-publish": "npm run build && npm run build-demo",
+    "pre-publish": "npm run build",
     "publish-lib": "npm run pre-publish && cd dist/cytoscape-angular && npm publish",
     "firebase:deploy": "firebase deploy"
   },
@@ -19,7 +18,7 @@
     "chart.js": "^3.4.1",
     "cytoscape": "^3.19.0",
     "cytoscape-dagre": "^2.3.2",
-    "dagre": "^0.8.11",
+    "dagre": "^0.8.12",
     "primeicons": "^4.1.0",
     "primeng": "^12.0.0",
     "quill": "^1.3.7",
@@ -50,7 +49,7 @@
     "codelyzer": "^6.0.2",
     "cytoscape": "^3.19.0",
     "cytoscape-dagre": "^2.3.2",
-    "dagre": "^0.8.11",
+    "dagre": "^0.8.12",
     "jasmine-core": "~3.8.0",
     "jasmine-spec-reporter": "~7.0.0",
     "karma": "~6.3.4",
@@ -67,8 +66,5 @@
     "tslint": "~6.1.3",
     "typescript": "~4.3.5",
     "zone.js": "~0.11.4"
-  },
-  "dependencies": {
-    "cytoscape-angular": "^0.8.11"
   }
 }

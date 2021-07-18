@@ -13,49 +13,25 @@
  in a future release.
  
  ## Usage 
- For a full demo see the sister project in this repo, cytoscape-angular-demo.
+ For a full demo see the example-project in this repo.
  To get your own Angular project running with cytoscape-angular:
- - cytoscape-angular-demo to a new directory
- - In the new directory run:
+ - Copy example-project to a new directory
    npm install 
- 
- If you don't have an angular app, create one, it's so easy.  Install and use the
- [Angular CLI](https://github.com/angular/angular-cli)
-  
- In a template in your app add the graph 
- 
- <cytoscape-graph [nodes]="fooNodes" [edges]="fooEdges"/> 
- 
- @Component
- export class FooComponent implements OnInit {
-    fooNodes: Nodes[]
-    fooEdges: Nodes[]
-    
-    constructor(public fooService:FooService) {
-    }
-    
-    ngOnInit(): void {
-        fooService.fooNodes().subscribe(nodes => this.fooNodes = nodes)
-        fooService.fooEdges().subscribe(edges => this.fooEdges = edges)
-    }
- }
- 
+   npm serve
+   
 Brought to you by [Michael Bushe](michael@mindfulsoftware.com) from [Mindful Software](https://www.mindfulsoftware.com) and [Kaavio](https://www.kaavio.com) .
-
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.1.
-
-## Code scaffolding
-
-Run `ng generate component component-name --project cytoscape-angular` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project cytoscape-angular`.
-> Note: Don't forget to add `--project cytoscape-angular` or else it will be added to the default project in your `angular.json` file. 
 
 ## Build
 
-Run `ng build cytoscape-angular` to build the project. The build artifacts will be stored in the `dist/` directory.
+Run `npm run build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
 ## Publishing
 
-After building your library with `ng build cytoscape-angular`, go to the dist folder `cd dist/cytoscape-angular` and run `npm publish`.
+After building 
+`cd dist/cytoscape-angular`
+Remove the "pre-publish" lines in dist/cytoscape-angular/package.json
+TODO: automate 
+Run `npm publish`.
 
 ## Running unit tests
 
