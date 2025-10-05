@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "example-project/dist/cytoscape-angular-example",
+    "public": "dist/demo/browser",
     "ignore": [
       "firebase.json",
       "**/.*",

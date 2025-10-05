@@ -4,9 +4,11 @@
   "description": "Angular workspace for cytoscape-angular library and demo",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve demo",
     "build": "ng build cytoscape-angular",
     "build:prod": "ng build cytoscape-angular --configuration production",
+    "build:demo": "ng build demo --configuration production",
+    "build:demo:dev": "ng build demo",
     "watch": "ng build cytoscape-angular --watch --configuration development",
     "test": "ng test",
     "test:lib": "ng test cytoscape-angular",
