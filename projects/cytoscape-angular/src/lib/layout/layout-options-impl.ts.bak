@@ -1,0 +1,370 @@
+import type { LayoutOptions } from 'cytoscape';
+import { FormInfo, FieldsetInfo, FieldInfo } from '../fluid-form/form-info';
+
+/**
+ * Layout Options Implementations with Form Metadata
+ *
+ * These classes provide typed layout options AND the FormInfo metadata
+ * to automatically generate appropriate configuration forms.
+ */
+
+/**
+ * Grid Layout Options
+ * Arranges nodes in a grid pattern
+ */
+export class GridLayoutOptions implements Partial<LayoutOptions> {
+  name = 'grid' as const;
+  fit = true;
+  padding = 30;
+  avoidOverlap = true;
+  avoidOverlapPadding = 10;
+  condense = false;
+  rows?: number;
+  cols?: number;
+  animate = false;
+  animationDuration = 500;
+
+  static getFormInfo(): FormInfo {
+    return new FormInfo('Grid Layout Options', [
+      new FieldsetInfo('Grid Structure', [
+        new FieldInfo('Rows', 'rows', 'number', 'Force number of rows (leave empty for automatic)'),
+        new FieldInfo('Columns', 'cols', 'number', 'Force number of columns (leave empty for automatic)'),
+        new FieldInfo('Condense', 'condense', 'boolean', 'Use minimal space instead of all available space'),
+      ]),
+      new FieldsetInfo('Spacing', [
+        new FieldInfo('Avoid Overlap', 'avoidOverlap', 'boolean', 'Prevent nodes from overlapping'),
+        new FieldInfo('Overlap Padding', 'avoidOverlapPadding', 'number', 'Extra spacing when avoiding overlap'),
+        new FieldInfo('Padding', 'padding', 'number', 'Padding around the layout'),
+      ]),
+      new FieldsetInfo('Animation', [
+        new FieldInfo('Animate', 'animate', 'boolean', 'Animate node positions'),
+        new FieldInfo('Duration (ms)', 'animationDuration', 'number', 'Animation duration in milliseconds'),
+      ]),
+      new FieldsetInfo('General', [
+        new FieldInfo('Fit to Viewport', 'fit', 'boolean', 'Fit the graph to the viewport'),
+      ])
+    ]);
+  }
+}
+
+/**
+ * Circle Layout Options
+ * Arranges nodes in a circular pattern
+ */
+export class CircleLayoutOptions implements Partial<LayoutOptions> {
+  name = 'circle' as const;
+  fit = true;
+  padding = 30;
+  radius?: number;
+  startAngle = (3 / 2) * Math.PI;
+  sweep?: number;
+  clockwise = true;
+  animate = false;
+  animationDuration = 500;
+  avoidOverlap = true;
+  spacingFactor = 1.75;
+
+  static getFormInfo(): FormInfo {
+    return new FormInfo('Circle Layout Options', [
+      new FieldsetInfo('Circle Properties', [
+        new FieldInfo('Radius', 'radius', 'number', 'Radius of the circle (leave empty for automatic)'),
+        new FieldInfo('Start Angle', 'startAngle', 'number', 'Starting angle in radians (default: 3π/2)'),
+        new FieldInfo('Sweep', 'sweep', 'number', 'Radians between first and last node (leave empty for full circle)'),
+        new FieldInfo('Clockwise', 'clockwise', 'boolean', 'Arrange nodes clockwise'),
+      ]),
+      new FieldsetInfo('Spacing', [
+        new FieldInfo('Avoid Overlap', 'avoidOverlap', 'boolean', 'Prevent nodes from overlapping'),
+        new FieldInfo('Spacing Factor', 'spacingFactor', 'number', 'Multiplier for overall spacing (>0)'),
+        new FieldInfo('Padding', 'padding', 'number', 'Padding around the layout'),
+      ]),
+      new FieldsetInfo('Animation', [
+        new FieldInfo('Animate', 'animate', 'boolean', 'Animate node positions'),
+        new FieldInfo('Duration (ms)', 'animationDuration', 'number', 'Animation duration'),
+      ]),
+      new FieldsetInfo('General', [
+        new FieldInfo('Fit to Viewport', 'fit', 'boolean', 'Fit the graph to viewport'),
+      ])
+    ]);
+  }
+}
+
+/**
+ * Concentric Layout Options
+ * Arranges nodes in concentric circles
+ */
+export class ConcentricLayoutOptions implements Partial<LayoutOptions> {
+  name = 'concentric' as const;
+  fit = true;
+  padding = 30;
+  startAngle = (3 / 2) * Math.PI;
+  sweep?: number;
+  clockwise = true;
+  equidistant = false;
+  minNodeSpacing = 10;
+  animate = false;
+  animationDuration = 500;
+  spacingFactor = 1.75;
+  avoidOverlap = true;
+
+  static getFormInfo(): FormInfo {
+    return new FormInfo('Concentric Layout Options', [
+      new FieldsetInfo('Concentric Properties', [
+        new FieldInfo('Equidistant', 'equidistant', 'boolean', 'Equal radial distance between levels'),
+        new FieldInfo('Min Node Spacing', 'minNodeSpacing', 'number', 'Minimum spacing between nodes'),
+        new FieldInfo('Start Angle', 'startAngle', 'number', 'Starting angle in radians'),
+        new FieldInfo('Sweep', 'sweep', 'number', 'Radians for sweep (optional)'),
+        new FieldInfo('Clockwise', 'clockwise', 'boolean', 'Arrange nodes clockwise'),
+      ]),
+      new FieldsetInfo('Spacing', [
+        new FieldInfo('Avoid Overlap', 'avoidOverlap', 'boolean', 'Prevent node overlap'),
+        new FieldInfo('Spacing Factor', 'spacingFactor', 'number', 'Overall spacing multiplier'),
+        new FieldInfo('Padding', 'padding', 'number', 'Layout padding'),
+      ]),
+      new FieldsetInfo('Animation', [
+        new FieldInfo('Animate', 'animate', 'boolean', 'Animate layout'),
+        new FieldInfo('Duration (ms)', 'animationDuration', 'number', 'Animation duration'),
+      ]),
+      new FieldsetInfo('General', [
+        new FieldInfo('Fit to Viewport', 'fit', 'boolean', 'Fit to viewport'),
+      ])
+    ]);
+  }
+}
+
+/**
+ * Breadth-First Layout Options
+ * Hierarchical layout using breadth-first traversal
+ */
+export class BreadthFirstLayoutOptions implements Partial<LayoutOptions> {
+  name = 'breadthfirst' as const;
+  fit = true;
+  padding = 30;
+  directed = false;
+  circle = false;
+  spacingFactor = 1.75;
+  animate = false;
+  animationDuration = 500;
+  avoidOverlap = true;
+  roots?: string;
+
+  static getFormInfo(): FormInfo {
+    return new FormInfo('Breadth-First Layout Options', [
+      new FieldsetInfo('Hierarchy', [
+        new FieldInfo('Directed', 'directed', 'boolean', 'Tree is directed downwards'),
+        new FieldInfo('Circle', 'circle', 'boolean', 'Put depths in concentric circles'),
+        new FieldInfo('Roots', 'roots', 'string', 'Selector for root nodes (optional)'),
+      ]),
+      new FieldsetInfo('Spacing', [
+        new FieldInfo('Avoid Overlap', 'avoidOverlap', 'boolean', 'Prevent overlap'),
+        new FieldInfo('Spacing Factor', 'spacingFactor', 'number', 'Spacing multiplier'),
+        new FieldInfo('Padding', 'padding', 'number', 'Layout padding'),
+      ]),
+      new FieldsetInfo('Animation', [
+        new FieldInfo('Animate', 'animate', 'boolean', 'Animate layout'),
+        new FieldInfo('Duration (ms)', 'animationDuration', 'number', 'Animation duration'),
+      ]),
+      new FieldsetInfo('General', [
+        new FieldInfo('Fit to Viewport', 'fit', 'boolean', 'Fit to viewport'),
+      ])
+    ]);
+  }
+}
+
+/**
+ * CoSE Layout Options
+ * Force-directed layout (Compound Spring Embedder)
+ */
+export class CoseLayoutOptions implements Partial<LayoutOptions> {
+  name = 'cose' as const;
+  fit = true;
+  padding = 30;
+  animate = true;
+  animationDuration = 500;
+  animationThreshold = 250;
+  refresh = 20;
+  randomize = false;
+  componentSpacing = 40;
+  nodeOverlap = 4;
+  nestingFactor = 1.2;
+  gravity = 1;
+  numIter = 1000;
+  initialTemp = 1000;
+  coolingFactor = 0.99;
+  minTemp = 1.0;
+
+  static getFormInfo(): FormInfo {
+    return new FormInfo('CoSE Layout Options', [
+      new FieldsetInfo('Force Properties', [
+        new FieldInfo('Node Overlap', 'nodeOverlap', 'number', 'Node repulsion multiplier'),
+        new FieldInfo('Gravity', 'gravity', 'number', 'Gravity force constant'),
+        new FieldInfo('Nesting Factor', 'nestingFactor', 'number', 'Multiplier for nested edges'),
+      ]),
+      new FieldsetInfo('Algorithm', [
+        new FieldInfo('Number of Iterations', 'numIter', 'number', 'Maximum iterations'),
+        new FieldInfo('Initial Temperature', 'initialTemp', 'number', 'Maximum node displacement'),
+        new FieldInfo('Cooling Factor', 'coolingFactor', 'number', 'Temperature reduction rate (0-1)'),
+        new FieldInfo('Min Temperature', 'minTemp', 'number', 'Lower temperature threshold'),
+        new FieldInfo('Randomize', 'randomize', 'boolean', 'Randomize initial positions'),
+      ]),
+      new FieldsetInfo('Spacing', [
+        new FieldInfo('Component Spacing', 'componentSpacing', 'number', 'Spacing between components'),
+        new FieldInfo('Padding', 'padding', 'number', 'Layout padding'),
+      ]),
+      new FieldsetInfo('Animation', [
+        new FieldInfo('Animate', 'animate', 'boolean', 'Animate layout'),
+        new FieldInfo('Duration (ms)', 'animationDuration', 'number', 'Animation duration'),
+        new FieldInfo('Threshold (ms)', 'animationThreshold', 'number', 'Delay before animation'),
+        new FieldInfo('Refresh Rate', 'refresh', 'number', 'Iterations between updates'),
+      ]),
+      new FieldsetInfo('General', [
+        new FieldInfo('Fit to Viewport', 'fit', 'boolean', 'Fit to viewport'),
+      ])
+    ]);
+  }
+}
+
+/**
+ * Dagre Layout Options
+ * Hierarchical directed acyclic graph layout
+ */
+export class DagreLayoutOptions implements Partial<LayoutOptions> {
+  name = 'dagre' as const;
+  fit = true;
+  padding = 30;
+  rankDir: 'TB' | 'BT' | 'LR' | 'RL' = 'TB';
+  nodeSep = 50;
+  rankSep = 50;
+  edgeSep?: number;
+  animate = false;
+  animationDuration = 500;
+  spacingFactor = 1.75;
+
+  static getFormInfo(): FormInfo {
+    return new FormInfo('Dagre Layout Options', [
+      new FieldsetInfo('Hierarchy', [
+        new FieldInfo('Rank Direction', 'rankDir', 'options', 'Direction of flow', undefined, false, false, undefined, 'text', 8, [
+          { label: 'Top to Bottom', value: 'TB' },
+          { label: 'Bottom to Top', value: 'BT' },
+          { label: 'Left to Right', value: 'LR' },
+          { label: 'Right to Left', value: 'RL' }
+        ], 'label', 'value'),
+      ]),
+      new FieldsetInfo('Spacing', [
+        new FieldInfo('Node Separation', 'nodeSep', 'number', 'Separation between adjacent nodes in same rank'),
+        new FieldInfo('Rank Separation', 'rankSep', 'number', 'Separation between each rank'),
+        new FieldInfo('Edge Separation', 'edgeSep', 'number', 'Separation between adjacent edges (optional)'),
+        new FieldInfo('Spacing Factor', 'spacingFactor', 'number', 'Overall spacing multiplier'),
+        new FieldInfo('Padding', 'padding', 'number', 'Layout padding'),
+      ]),
+      new FieldsetInfo('Animation', [
+        new FieldInfo('Animate', 'animate', 'boolean', 'Animate layout'),
+        new FieldInfo('Duration (ms)', 'animationDuration', 'number', 'Animation duration'),
+      ]),
+      new FieldsetInfo('General', [
+        new FieldInfo('Fit to Viewport', 'fit', 'boolean', 'Fit to viewport'),
+      ])
+    ]);
+  }
+}
+
+/**
+ * Random Layout Options
+ * Random node positions
+ */
+export class RandomLayoutOptions implements Partial<LayoutOptions> {
+  name = 'random' as const;
+  fit = true;
+  padding = 30;
+  animate = false;
+  animationDuration = 500;
+
+  static getFormInfo(): FormInfo {
+    return new FormInfo('Random Layout Options', [
+      new FieldsetInfo('General', [
+        new FieldInfo('Fit to Viewport', 'fit', 'boolean', 'Fit to viewport'),
+        new FieldInfo('Padding', 'padding', 'number', 'Layout padding'),
+      ]),
+      new FieldsetInfo('Animation', [
+        new FieldInfo('Animate', 'animate', 'boolean', 'Animate layout'),
+        new FieldInfo('Duration (ms)', 'animationDuration', 'number', 'Animation duration'),
+      ])
+    ]);
+  }
+}
+
+/**
+ * Preset Layout Options
+ * Uses predefined node positions
+ */
+export class PresetLayoutOptions implements Partial<LayoutOptions> {
+  name = 'preset' as const;
+  fit = true;
+  padding = 30;
+  animate = false;
+  animationDuration = 500;
+
+  static getFormInfo(): FormInfo {
+    return new FormInfo('Preset Layout Options', [
+      new FieldsetInfo('General', [
+        new FieldInfo('Fit to Viewport', 'fit', 'boolean', 'Fit to viewport'),
+        new FieldInfo('Padding', 'padding', 'number', 'Layout padding'),
+      ]),
+      new FieldsetInfo('Animation', [
+        new FieldInfo('Animate', 'animate', 'boolean', 'Animate to preset positions'),
+        new FieldInfo('Duration (ms)', 'animationDuration', 'number', 'Animation duration'),
+      ])
+    ]);
+  }
+}
+
+/**
+ * Helper function to get FormInfo for a layout
+ */
+export function getFormInfoForLayout(layoutName: string): FormInfo {
+  switch (layoutName) {
+    case 'grid':
+      return GridLayoutOptions.getFormInfo();
+    case 'circle':
+      return CircleLayoutOptions.getFormInfo();
+    case 'concentric':
+      return ConcentricLayoutOptions.getFormInfo();
+    case 'breadthfirst':
+      return BreadthFirstLayoutOptions.getFormInfo();
+    case 'cose':
+      return CoseLayoutOptions.getFormInfo();
+    case 'dagre':
+      return DagreLayoutOptions.getFormInfo();
+    case 'random':
+      return RandomLayoutOptions.getFormInfo();
+    case 'preset':
+      return PresetLayoutOptions.getFormInfo();
+    default:
+      return GridLayoutOptions.getFormInfo();
+  }
+}
+
+/**
+ * Helper function to create a layout instance
+ */
+export function createLayoutOptions(layoutName: string): Partial<LayoutOptions> {
+  switch (layoutName) {
+    case 'grid':
+      return new GridLayoutOptions();
+    case 'circle':
+      return new CircleLayoutOptions();
+    case 'concentric':
+      return new ConcentricLayoutOptions();
+    case 'breadthfirst':
+      return new BreadthFirstLayoutOptions();
+    case 'cose':
+      return new CoseLayoutOptions();
+    case 'dagre':
+      return new DagreLayoutOptions();
+    case 'random':
+      return new RandomLayoutOptions();
+    case 'preset':
+      return new PresetLayoutOptions();
+    default:
+      return new GridLayoutOptions();
+  }
+}

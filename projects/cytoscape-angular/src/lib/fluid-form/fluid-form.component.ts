@@ -1,142 +1,310 @@
 import {
-  AfterViewChecked, AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges
-} from '@angular/core'
-import { AsyncValidatorFn, FormControl, FormGroup, ValidatorFn } from '@angular/forms'
-import { FormInfo } from './form-info'
+  Component,
+  input,
+  OnInit,
+  signal,
+  computed,
+  effect,
+  model,
+  EventEmitter
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidatorFn,
+  AsyncValidatorFn
+} from '@angular/forms';
+import { FormInfo, FieldInfo } from './form-info';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatButtonModule } from '@angular/material/button';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
+/**
+ * Fluid Form Component
+ * 
+ * A sophisticated dynamic form generator that creates form fields based on FormInfo configuration.
+ * This component demonstrates advanced Angular patterns:
+ * - Dynamic form generation from metadata
+ * - Type-aware field rendering
+ * - Reactive two-way binding
+ * - Conditional field display
+ * - Automatic validation
+ * 
+ * Perfect for showing different configuration options based on selected layout type or style.
+ * 
+ * @example
+ * ```html
+ * <cyng-fluid-form
+ *   [(model)]="layoutOptions"
+ *   [formInfo]="getFormInfoForLayout(layoutType)"
+ * />
+ * ```
+ */
 @Component({
   selector: 'cyng-fluid-form',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+    MatButtonModule,
+    MatExpansionModule,
+    MatTooltipModule
+  ],
   template: `
-    <form [formGroup]="formGroup" [title]="formInfo?.title" (ngSubmit)="onSubmit()">
-      <ng-container *ngFor="let fieldSetInfo of formInfo?.fieldsets">
-        <p-fieldset *ngIf="fieldSetInfo.showFieldsetForModel(model)" class="fieldset" legend="{{fieldSetInfo.legend}}">
-          <div class="ui-g ui-fluid">
-            <div class="ui-g-12 ui-md-4 field" *ngFor="let fieldInfo of fieldSetInfo.fieldInfos">
-              <div class="ui-inputgroup">
-                <ng-container *ngIf="fieldInfo.fieldType(model) === 'boolean'">
-                  <span class="ui-chkbox-label">
-                    {{fieldInfo.label}}
-                  </span>
-                  <p-inputSwitch
-                    name="{{fieldInfo.modelProperty}}"
-                    pTooltip="{{fieldInfo.tooltip}}"
-                    formControlName="{{fieldInfo.modelProperty}}"
-                  >
-                  </p-inputSwitch>
-                </ng-container>
-                <ng-container
-                  *ngIf="fieldInfo.fieldType(model) === 'string' || fieldInfo.fieldType(model) === 'number'">
-                  <span class="ui-float-label">
-                    <input pInputText
-                           id="{{fieldInfo.modelProperty}}"
-                           name="{{fieldInfo.modelProperty}}"
-                           formControlName="{{fieldInfo.modelProperty}}"
-                           [pTooltip]="fieldInfo.tooltip"
-                           [type]="fieldInfo.inputType"
-                           [size]="fieldInfo.inputSize"
-                    />
-                    <label for="{{fieldInfo.modelProperty}}">{{fieldInfo.label}}</label>
-                  </span>
-                </ng-container>
-                <ng-container *ngIf="fieldInfo.fieldType(model) === 'options'">
-                  <span class="ui-float-label">
-                    <p-dropdown
-                      formControlName="{{fieldInfo.modelProperty}}"
-                      [name]="fieldInfo.modelProperty"
-                      [options]="fieldInfo.options"
-                      [optionLabel]="fieldInfo.optionArrayLabelField"
-                      [pTooltip]="fieldInfo.tooltip"
-                    ></p-dropdown>
-                    <label for="{{fieldInfo.modelProperty}}">{{fieldInfo.label}}</label>
-                  </span>
-                </ng-container>
-              </div>
+    <form [formGroup]="formGroup()" [title]="formInfo()?.title" (ngSubmit)="onSubmit()">
+      @for (fieldSetInfo of formInfo()?.fieldsets || []; track fieldSetInfo.legend) {
+        @if (fieldSetInfo.showFieldsetForModel(model())) {
+          <mat-expansion-panel [expanded]="true" class="fieldset">
+            <mat-expansion-panel-header>
+              <mat-panel-title>{{ fieldSetInfo.legend }}</mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="field-grid">
+              @for (fieldInfo of fieldSetInfo.fieldInfos; track fieldInfo.modelProperty) {
+                @if (shouldShowField(fieldInfo)) {
+                  <div class="field-wrapper">
+                    <!-- Boolean Field (Slide Toggle) -->
+                    @if (fieldInfo.fieldType(model()) === 'boolean') {
+                      <mat-slide-toggle
+                        [formControlName]="fieldInfo.modelProperty!"
+                        [matTooltip]="fieldInfo.tooltip || ''"
+                        color="primary">
+                        {{ fieldInfo.getLabel() }}
+                      </mat-slide-toggle>
+                    }
+
+                    <!-- String or Number Input -->
+                    @if (fieldInfo.fieldType(model()) === 'string' || fieldInfo.fieldType(model()) === 'number') {
+                      <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>{{ fieldInfo.getLabel() }}</mat-label>
+                        <input matInput
+                               [formControlName]="fieldInfo.modelProperty!"
+                               [type]="fieldInfo.inputType"
+                               [matTooltip]="fieldInfo.tooltip || ''"
+                               [placeholder]="fieldInfo.placeholder || ''">
+                        @if (fieldInfo.modelProperty && formGroup().get(fieldInfo.modelProperty)?.hasError('required')) {
+                          <mat-error>This field is required</mat-error>
+                        }
+                        @if (fieldInfo.modelProperty && formGroup().get(fieldInfo.modelProperty)?.hasError('min')) {
+                          <mat-error>Value too small</mat-error>
+                        }
+                        @if (fieldInfo.modelProperty && formGroup().get(fieldInfo.modelProperty)?.hasError('max')) {
+                          <mat-error>Value too large</mat-error>
+                        }
+                      </mat-form-field>
+                    }
+
+                    <!-- Dropdown (Options) -->
+                    @if (fieldInfo.fieldType(model()) === 'options') {
+                      <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>{{ fieldInfo.getLabel() }}</mat-label>
+                        <mat-select
+                          [formControlName]="fieldInfo.modelProperty!"
+                          [matTooltip]="fieldInfo.tooltip || ''">
+                          @for (option of fieldInfo.getOptions(model()); track option) {
+                            <mat-option [value]="fieldInfo.getOptionValue(option, model())">
+                              {{ fieldInfo.getOptionLabel(option, model()) }}
+                            </mat-option>
+                          }
+                        </mat-select>
+                      </mat-form-field>
+                    }
+                  </div>
+                }
+              }
             </div>
-          </div>
-        </p-fieldset>
-      </ng-container>
+          </mat-expansion-panel>
+        }
+      }
+
+      @if (formInfo()?.showSubmitButton) {
+        <button mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="formInfo().disableSubmitOnFormInvalid && !formGroup().valid"
+                class="submit-button">
+          {{ formInfo().submitText || 'Submit' }}
+        </button>
+      }
     </form>
-    <button *ngIf="formInfo.showSubmitButton" pButton
-            [disabled]="formInfo.disableSubmitOnFormInvalid && !formGroup.valid"
-            (submit)="onSubmit()">{{formInfo.submitText || 'Submit' }}</button>
   `,
   styles: [`
-    .ui-chkbox-label {
-      padding-right: 0.5em;
-    }
-
-    .ui-dropdown-label {
-      align-self: center;
-      padding-right: 0.5em
-    }
-
-    .field:nth-child(n+4) {
-        margin-top: 1em; // otherwise overlap betwen a field and a floating label of the field below it
+    :host {
+      display: block;
     }
 
     .fieldset {
+      margin-bottom: 16px;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 16px;
+      padding: 16px 0;
+    }
+
+    .field-wrapper {
+      display: flex;
+      align-items: center;
+    }
+
+    .full-width {
+      width: 100%;
+    }
+
+    mat-slide-toggle {
+      margin: 8px 0;
+    }
+
+    .submit-button {
+      margin-top: 16px;
+      width: 100%;
+    }
+
+    ::ng-deep .mat-expansion-panel-body {
+      padding-top: 16px !important;
     }
   `]
 })
-export class FluidFormComponent implements OnInit, OnChanges, AfterViewInit, AfterViewChecked {
-  @Input()
-  model: object
-  @Output()
-  modelChange: EventEmitter<object> = new EventEmitter<object>()
+export class FluidFormComponent implements OnInit {
+  // Two-way binding for the model
+  readonly model = model.required<Record<string, any>>();
+  
+  // Form configuration
+  readonly formInfo = input.required<FormInfo>();
 
-  @Input()
-  modelProperty: string
-  @Input()
-  formInfo: FormInfo
-
-  formGroup: FormGroup
+  // Form group signal
+  protected readonly formGroup = signal<FormGroup>(new FormGroup({}));
 
   constructor() {
+    // Effect to rebuild form when formInfo changes
+    effect(() => {
+      const info = this.formInfo();
+      if (info) {
+        this.buildForm(info);
+      }
+    }, { allowSignalWrites: true });
+
+    // Effect to update form values when model changes externally
+    effect(() => {
+      const currentModel = this.model();
+      const group = this.formGroup();
+      
+      if (group && currentModel) {
+        this.updateFormFromModel(currentModel, group);
+      }
+    }, { allowSignalWrites: true });
   }
 
   ngOnInit(): void {
-    console.debug('FluidFormComponent this.formInfo:', JSON.stringify(this.formInfo))
-    let controls = {}
-    this.formInfo.fieldsets.forEach(fieldsetInfo => {
-      fieldsetInfo.fieldInfos.forEach(fieldInfo => {
-        let modelValue = this.model[fieldInfo.modelProperty]
-        // console.log('fieldInfo.modelProperty:', fieldInfo.modelProperty, ', modelValue:', modelValue)
-        const validators: ValidatorFn[] = typeof fieldInfo.validators === 'function' ? fieldInfo.validators() : fieldInfo.validators
-        const asyncValidators: AsyncValidatorFn[] = typeof fieldInfo.asyncValidators === 'function' ? fieldInfo.asyncValidators() : fieldInfo.asyncValidators
-        const { updateOn } = fieldInfo
-        let formControl = new FormControl(modelValue, {validators, asyncValidators, updateOn })
-        formControl.valueChanges.subscribe( (change) => {
-          console.debug('form control change ', JSON.stringify(change), ' for prop ', fieldInfo.modelProperty,
-            ', changing current model value ', this.model[fieldInfo.modelProperty], ' to ', change)
-          fieldInfo.setValue(change, this.model, this.modelChange)
-        })
-        controls[fieldInfo.modelProperty] = formControl
-      })
-    })
-    this.formGroup = new FormGroup(controls)
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    console.debug('ngOnChanges fluid-form changes:', JSON.stringify(changes))
-    if (changes['model']) {
-      const model = changes['model'].currentValue
-      for (let key of Object.keys(model)) {
-        console.debug('ngOnChanges model key copying to form:', key)
-        const control = this.formGroup?.controls[key]
-        control ? control.setValue(model[key], { emitEvent: false }) : console.warn('no control for model key ', key)
-      }
+    const info = this.formInfo();
+    if (info) {
+      this.buildForm(info);
     }
   }
 
-  ngAfterViewInit(): void {
-    // console.debug("ngAfterViewInit")
+  /**
+   * Builds the reactive form from FormInfo configuration
+   */
+  private buildForm(formInfo: FormInfo): void {
+    const controls: Record<string, FormControl> = {};
+    const currentModel = this.model();
+
+    formInfo.fieldsets.forEach(fieldsetInfo => {
+      fieldsetInfo.fieldInfos.forEach(fieldInfo => {
+        if (!fieldInfo.modelProperty) {
+          return;
+        }
+
+        const modelValue = currentModel[fieldInfo.modelProperty];
+        
+        // Get validators
+        const validators: ValidatorFn[] = typeof fieldInfo.validators === 'function'
+          ? fieldInfo.validators()
+          : fieldInfo.validators || [];
+        
+        const asyncValidators: AsyncValidatorFn[] = typeof fieldInfo.asyncValidators === 'function'
+          ? fieldInfo.asyncValidators()
+          : fieldInfo.asyncValidators || [];
+        
+        const { updateOn } = fieldInfo;
+
+        // Create form control
+        const formControl = new FormControl(modelValue, {
+          validators,
+          asyncValidators,
+          updateOn
+        });
+
+        // Subscribe to value changes
+        formControl.valueChanges.subscribe(change => {
+          this.onFieldChange(fieldInfo, change);
+        });
+
+        controls[fieldInfo.modelProperty] = formControl;
+      });
+    });
+
+    this.formGroup.set(new FormGroup(controls));
   }
 
-  ngAfterViewChecked(): void {
-    // console.debug("ngAfterViewChecked")
+  /**
+   * Handles field value changes
+   */
+  private onFieldChange(fieldInfo: FieldInfo, newValue: any): void {
+    const currentModel = this.model();
+    const updatedModel = { ...currentModel };
+    
+    // Create a dummy EventEmitter for compatibility
+    const emitter = new EventEmitter<any>();
+    fieldInfo.setValue(newValue, updatedModel, emitter);
+    
+    // Update the model signal
+    this.model.set(updatedModel);
   }
 
-  onSubmit() {
-    console.log(`Form submitted`)
+  /**
+   * Updates form controls from model without triggering valueChanges
+   */
+  private updateFormFromModel(model: Record<string, any>, formGroup: FormGroup): void {
+    Object.keys(model).forEach(key => {
+      const control = formGroup.get(key);
+      if (control && control.value !== model[key]) {
+        control.setValue(model[key], { emitEvent: false });
+      }
+    });
+  }
+
+  /**
+   * Determines if a field should be displayed
+   */
+  protected shouldShowField(fieldInfo: FieldInfo): boolean {
+    if (!fieldInfo.modelProperty) {
+      return false;
+    }
+
+    const currentModel = this.model();
+    
+    if (fieldInfo.hideWhenNoModelProperty && 
+        currentModel[fieldInfo.modelProperty] === undefined) {
+      return false;
+    }
+
+    return true;
+  }
+
+  protected onSubmit(): void {
+    console.log('Form submitted', this.formGroup().value);
   }
 }

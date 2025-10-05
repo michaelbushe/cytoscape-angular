@@ -3,7 +3,7 @@ import {EdgeDefinition, LayoutOptions, NodeDefinition, Stylesheet} from 'cytosca
 // @ts-ignore
 import dagre from 'cytoscape-dagre'
 import { CyNodeService } from './cy-node.service'
-import { CoseLayoutOptionsImpl, CytoscapeGraphComponent } from 'cytoscape-angular'
+import { CoseLayoutOptions, CytoscapeGraphComponent } from 'cytoscape-angular'
 import { StylesheetImpl } from '../style/style'
 import {combineLatest, Subscription} from 'rxjs'
 declare var cytoscape: any
@@ -68,7 +68,7 @@ declare var cytoscape: any
 export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('biggraph')
   bigGraph: CytoscapeGraphComponent | null
-  bigGraphLayoutOptions: LayoutOptions = new CoseLayoutOptionsImpl()
+  bigGraphLayoutOptions: LayoutOptions = new CoseLayoutOptions()
   bigGraphNodes: NodeDefinition[] = []
   bigGraphEdges: EdgeDefinition[] = []
   bigGraphStylesheet: Stylesheet[] = [new StylesheetImpl()]

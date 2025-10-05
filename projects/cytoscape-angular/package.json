@@ -1,21 +1,49 @@
 {
   "name": "cytoscape-angular",
-  "version": "0.8.12",
-  "description": "Angular 12+ components for cytoscape charting.",
-  "author": "Michael Bushe mike@MindfulSoftware.com",
-  "repository": "https://github.com/michaelbushe/cytoscape-angular.git",
-  "homepage": "https://github.com/michaelbushe/cytoscape--angular",
+  "version": "1.0.0",
+  "description": "Angular 20+ components for Cytoscape graph visualization.",
+  "author": "Michael Bushe <mike@MindfulSoftware.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/michaelbushe/cytoscape-angular.git"
+  },
+  "homepage": "https://github.com/michaelbushe/cytoscape-angular",
   "keywords": [
-    "cytoscape", "cytoscape.js", "angular", "graph", "bioinformatics", "finance", "javascript", "typescript", "component"
+    "cytoscape",
+    "cytoscape.js",
+    "angular",
+    "angular20",
+    "graph",
+    "visualization",
+    "network",
+    "bioinformatics",
+    "data-visualization",
+    "typescript",
+    "component",
+    "standalone-components",
+    "signals"
   ],
   "license": "MIT",
   "dependencies": {
-    "tslib": "^2.3.0"
+    "tslib": "^2.7.0"
   },
   "peerDependencies": {
-    "@angular/common": "^12.1.2",
-    "@angular/core": "^12.1.2",
-    "cytoscape": "^3.19.0",
-    "cytoscape-dagre": "^2.3.2"
-  }
+    "@angular/common": "^20.0.0",
+    "@angular/core": "^20.0.0",
+    "@angular/cdk": "^20.0.0",
+    "@angular/material": "^20.0.0",
+    "@angular/forms": "^20.0.0",
+    "cytoscape": "^3.30.0",
+    "cytoscape-dagre": "^2.5.0",
+    "rxjs": "^7.8.0"
+  },
+  "peerDependenciesMeta": {
+    "@angular/cdk": {
+      "optional": false
+    },
+    "@angular/material": {
+      "optional": false
+    }
+  },
+  "sideEffects": false
 }
