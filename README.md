@@ -8,6 +8,8 @@
 
 A production-ready Angular library providing sophisticated graph visualization capabilities using [Cytoscape.js](https://js.cytoscape.org/). 
 
+Check out the [demo](https://cytoscape-angular.web.app).
+
 ## 🌟 Key Features
 
 - **🎯 Modern Angular 20** - Built with the latest Angular features: signals, standalone components, and proper RxJS patterns
